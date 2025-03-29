@@ -2,7 +2,7 @@ export class LoginPage {
 
     constructor(page) {
         this.page = page;
-        this.rootDivLocator = page.locator('div.MuiPaper-root.MuiCard-root.RaLogin-card')
+        this.rootDivLoc = page.locator('div.MuiPaper-root.MuiCard-root.RaLogin-card');
         this.usernameInputLoc = page.getByRole('textbox', { name: 'Username' });
         this.passwordInputLoc = page.getByRole('textbox', { name: 'Password' });
         this.signInButtonLoc = page.getByRole('button', { name: 'Sign in'});
