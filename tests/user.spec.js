@@ -1,6 +1,11 @@
 import { test, expect } from "@playwright/test";
 import { DashboardPage, LoginPage, UserPage } from "./co/index.js"
-import { loginCredentials, getNewUserData, checkIsUserInTable, expectSuccessNotification, invalidEmail } from "./helpers/index.js"
+import { loginCredentials,
+    getNewUserData,
+    checkIsEntityInTable,
+    expectSuccessNotification,
+    invalidEmail
+} from "./helpers/index.js"
 
 test.describe('UserPage page tests', () => {
     let userPage;
@@ -59,7 +64,7 @@ test.describe('UserPage page tests', () => {
 
         await test.step('Check that user is displayed in the table', async () => {
             await userPage.openUsersPage();
-            await checkIsUserInTable(userPage, newUser.email, true);
+            await checkIsEntityInTable(userPage, newUser.email, true);
         });
     });
 
@@ -215,7 +220,7 @@ test.describe('UserPage page tests', () => {
 
             await test.step('Check that user is not displayed in the table', async () => {
                 await userPage.openUsersPage();
-                await checkIsUserInTable(userPage, newUser.email);
+                await checkIsEntityInTable(userPage, newUser.email);
             });
         });
     });
@@ -232,7 +237,6 @@ test.describe('UserPage page tests', () => {
 
         await test.step('Click the button Delete', async () => {
             await userPage.deleteButtonLoc.click();
-            await expect(userPage.emptyUsersLoc).toBeVisible();
         });
 
         await test.step('Check empty users list', async () => {

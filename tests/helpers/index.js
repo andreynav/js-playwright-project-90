@@ -1,7 +1,21 @@
-import { loginCredentials } from "./testData.js"
-import { getNewUserData } from "./utils.js"
-import { checkIsUserInTable } from "./utils.js";
-import { expectSuccessNotification } from "./utils.js";
-import { invalidEmail } from "./testData.js";
+import { loginCredentials,
+    invalidEmail,
+    Status,
+    Label
+} from "./testData.js"
 
-export { loginCredentials, getNewUserData, checkIsUserInTable, expectSuccessNotification, invalidEmail }
+import { getNewUserData,
+    checkIsEntityInTable,
+    expectSuccessNotification,
+    getNewTaskData,
+} from "./utils.js"
+
+export { loginCredentials,
+    getNewUserData,
+    checkIsEntityInTable,
+    expectSuccessNotification,
+    invalidEmail,
+    getNewTaskData,
+    Status,
+    Label
+}

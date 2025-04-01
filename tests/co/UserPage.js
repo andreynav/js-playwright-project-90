@@ -1,5 +1,4 @@
 export class UserPage {
-
     constructor(page) {
         this.page = page;
 

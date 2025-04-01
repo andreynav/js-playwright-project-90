@@ -9,12 +9,22 @@ export const getNewUserData = async () => {
     };
 };
 
-export const checkIsUserInTable = async (page, userData, isPresent) => {
-    const row = await page.getRowByTextLocator(userData);
+export const checkIsEntityInTable = async (page, entityData, isPresent) => {
+    const row = await page.getRowByTextLocator(entityData);
     return isPresent ? expect(row).toBeVisible() : expect(row).not.toBeVisible();
 }
 
 export const expectSuccessNotification = async (page, text) => {
     return expect(await page.getSuccessNotification(text)).toBeVisible();
+}
 
+export const getNewTaskData = async (status, label) => {
+    const timestamp = new Date().getTime();
+    return {
+        assignee: 'john@google.com',
+        title: `${timestamp}title`,
+        content: `${timestamp}content`,
+        status: status,
+        label: label
+    };
 }
