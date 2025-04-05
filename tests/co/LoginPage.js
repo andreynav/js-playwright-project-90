@@ -1,15 +1,16 @@
-export class LoginPage {
+import { BasePage } from "./index";
+
+export class LoginPage extends BasePage {
 
     constructor(page) {
+        super(page);
         this.page = page;
-        this.rootDivLoc = page.locator('div.MuiPaper-root.MuiCard-root.RaLogin-card');
+        this.pageName = 'loginPage';
+
+        this.rootLoc = page.locator('div.MuiPaper-root.MuiCard-root.RaLogin-card');
         this.usernameInputLoc = page.getByRole('textbox', { name: 'Username' });
         this.passwordInputLoc = page.getByRole('textbox', { name: 'Password' });
         this.signInButtonLoc = page.getByRole('button', { name: 'Sign in'});
-    }
-
-    async open() {
-        await this.page.goto('/#/login');
     }
 
     async login(userCredentials) {
@@ -18,4 +19,3 @@ export class LoginPage {
         await this.signInButtonLoc.click();
     }
 }
-

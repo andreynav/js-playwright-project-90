@@ -10,12 +10,12 @@ export const getNewUserData = async () => {
 };
 
 export const checkIsEntityInTable = async (page, entityData, isPresent) => {
-    const row = await page.getRowByTextLocator(entityData);
+    const row = await page.getByRole('row').filter({ hasText: entityData });
     return isPresent ? expect(row).toBeVisible() : expect(row).not.toBeVisible();
 }
 
 export const expectSuccessNotification = async (page, text) => {
-    return expect(await page.getSuccessNotification(text)).toBeVisible();
+    return expect(await page.getByText(text)).toBeVisible();
 }
 
 export const getNewTaskData = async (status, label) => {
