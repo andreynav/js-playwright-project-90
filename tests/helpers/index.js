@@ -1,7 +1,9 @@
 import { loginCredentials,
     invalidEmail,
     Status,
-    Label
+    Label,
+    Filter,
+    taskOne
 } from "./testData.js"
 
 import { getNewUserData,
@@ -17,5 +19,7 @@ export { loginCredentials,
     invalidEmail,
     getNewTaskData,
     Status,
-    Label
+    Label,
+    Filter,
+    taskOne
 }

@@ -21,3 +21,14 @@ export const Label = Object.freeze({
     BUG: 'bug'
 });
 
+export const Filter = Object.freeze({
+    ASSIGNEE: 'Assignee',
+    STATUS: 'Status',
+    LABEL: 'Label'
+});
+
+export const taskOne = {
+    title: 'Task 1',
+    description: 'Description of task 1',
+    index: 3140,
+}
