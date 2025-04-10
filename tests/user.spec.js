@@ -1,4 +1,3 @@
-import { log } from "console";
 import { DashboardPage, LoginPage, UserPage, BasePage } from "./co/index.js";
 import { loginCredentials, getNewUserData, checkIsEntityInTable, expectSuccessNotification, invalidEmail } from "./helpers/index.js";
 import { test, expect } from "@playwright/test";
