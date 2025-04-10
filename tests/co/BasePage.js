@@ -2,7 +2,7 @@ export class BasePage {
 
     static idRegEx = /^\d+/;
     static nameRegEx = /\b[a-zA-Z][a-zA-Z]*\b/;
-    static dateRegEx = /\d{1,2}\/\d{1,2}\/\d{4}, \d{1,2}:\d{2}:\d{2} (AM|PM)/;
+    static dateRegEx = /^(\d{1,2}\/\d{1,2}\/\d{4}, \d{1,2}:\d{2}:\d{2} (AM|PM)|\d{1,2}\.\d{1,2}\.\d{4}, \d{2}:\d{2}:\d{2})$/;
     static userSlug = '#/users/';
     static taskStatusSlug = '#/task_statuses/';
     static labelSlug = '#/labels/';

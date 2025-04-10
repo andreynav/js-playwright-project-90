@@ -1,3 +1,4 @@
+import { log } from "console";
 import { DashboardPage, LoginPage, UserPage, BasePage } from "./co/index.js";
 import { loginCredentials, getNewUserData, checkIsEntityInTable, expectSuccessNotification, invalidEmail } from "./helpers/index.js";
 import { test, expect } from "@playwright/test";
@@ -88,7 +89,10 @@ test.describe("UserPage page tests", () => {
 		});
 
 		await test.step("Check that users more than one in the table", async () => {
-			await expect((await basePage.rowLoc.count()) > 1).toBeTruthy();
+			await expect(basePage.rowLoc.first()).toBeVisible();
+
+			const count = await basePage.rowLoc.count();
+			await expect(count > 1).toBeTruthy();
 		});
 	});
 
