@@ -1,4 +1,4 @@
-import { BasePage } from "./index";
+import { BasePage } from "./BasePage";
 
 export class TaskPage extends BasePage {
 	FieldsEnum = {
@@ -58,8 +58,8 @@ export class TaskPage extends BasePage {
 		return await this.getTaskByNumber(number).locator(locName);
 	}
 
-	async getTasksInColumn(page, columnName) {
-		const columnLocator = page.locator(`xpath=//h6[text()='${columnName}']/following-sibling::div[@data-rfd-droppable-id]//div[@data-rfd-draggable-id]`);
+	async getTasksInColumn(columnName) {
+		const columnLocator = this.page.locator(`xpath=//h6[text()='${columnName}']/following-sibling::div[@data-rfd-droppable-id]//div[@data-rfd-draggable-id]`);
 		const taskCount = await columnLocator.count();
 		const tasks = [];
 		for (let i = 0; i < taskCount; i++) {
@@ -68,13 +68,13 @@ export class TaskPage extends BasePage {
 		return tasks;
 	}
 
-	async isTaskWithNameInColumn(page, columnName, taskName) {
-		const taskInColumn = page.locator(`xpath=//h6[text()='${columnName}']/following-sibling::div[@data-rfd-droppable-id]//div[@data-rfd-draggable-id]`);
+	async isTaskWithNameInColumn(columnName, taskName) {
+		const taskInColumn = this.page.locator(`xpath=//h6[text()='${columnName}']/following-sibling::div[@data-rfd-droppable-id]//div[@data-rfd-draggable-id]`);
 		const taskCount = await taskInColumn.filter({ hasText: taskName }).count();
 		return taskCount === 1;
 	}
 
-	async dragTask(page, from, to, upTimeout = 500) {
+	async dragTask(from, to, upTimeout = 500) {
 		const fromBox = await from.boundingBox();
 		const toBox = await to.boundingBox();
 
@@ -88,10 +88,10 @@ export class TaskPage extends BasePage {
 			y: toBox.y + toBox.height / 2,
 		};
 
-		await page.mouse.move(fromCenter.x, fromCenter.y);
-		await page.mouse.down();
-		await page.mouse.move(toCenter.x, toCenter.y, { steps: 20 });
-		await page.mouse.up();
-        await page.waitForTimeout(upTimeout);
+		await this.page.mouse.move(fromCenter.x, fromCenter.y);
+		await this.page.mouse.down();
+		await this.page.mouse.move(toCenter.x, toCenter.y, { steps: 20 });
+		await this.page.mouse.up();
+		await this.page.waitForTimeout(upTimeout);
 	}
 }

@@ -1,41 +1,15 @@
-import { DashboardPage, LoginPage, TaskPage, BasePage } from "./co/index.js";
-import { getNewTaskData, loginCredentials, expectSuccessNotification, Status, Label, Filter, taskOne } from "./helpers/index.js";
-import { test, expect } from "@playwright/test";
+import { getNewTaskData, expectSuccessNotification, Status, Label, Filter, taskOne } from "./helpers/index.js";
+import { test, expect } from "./co/co.js";
 
 test.describe("TasksPage page tests", () => {
 	test.describe("Statuses tests", () => {
-		let taskPage;
-		let basePage;
-		let createButtonLoc;
-
-		test.beforeEach(async ({ page }) => {
-			let loginPage;
-
-			await test.step("Open login page", async () => {
-				loginPage = new LoginPage(page);
-				await BasePage.openPage(page, loginPage.pageName);
-			});
-
-			await test.step("Log in with credentials", async () => {
-				await loginPage.login(loginCredentials);
-			});
-
-			await test.step("Check that logged in successfully", async () => {
-				const dashboardPage = new DashboardPage(page);
-				await expect(dashboardPage.dashboardTitleLoc).toBeVisible();
-				taskPage = new TaskPage(page);
-				basePage = new BasePage(page);
-				createButtonLoc = await basePage.getCreateEntityLoc(taskPage.pageName);
-			});
-		});
-
-		test("Create a new task form contains all required fields", async ({ page }) => {
+		test("Create a new task form contains all required fields", async ({ basePage, taskPage }) => {
 			await test.step("Open task page", async () => {
-				await BasePage.openPage(page, taskPage.pageName);
+				await basePage.openPage(taskPage.pageName);
 			});
 
 			await test.step('Click the button "Create new task"', async () => {
-				await createButtonLoc.click();
+				await basePage.getCreateEntityLoc(taskPage.pageName).click();
 			});
 
 			await test.step("Check that task form elements are displayed", async () => {
@@ -49,15 +23,15 @@ test.describe("TasksPage page tests", () => {
 			});
 		});
 
-		test("Create task with PUBLISHED statuses", async ({ page }) => {
+		test("Create task with PUBLISHED statuses", async ({ basePage, taskPage, page }) => {
 			const task = await getNewTaskData(Status.PUBLISHED, Label.BUG);
 
 			await test.step("Open task page", async () => {
-				await BasePage.openPage(page, taskPage.pageName);
+				await basePage.openPage(taskPage.pageName);
 			});
 
 			await test.step('Click the button "Create new task"', async () => {
-				await createButtonLoc.click();
+				await basePage.getCreateEntityLoc(taskPage.pageName).click();
 			});
 
 			await test.step("Create a new task", async () => {
@@ -66,9 +40,9 @@ test.describe("TasksPage page tests", () => {
 			});
 		});
 
-		test("Panel of filters contains all required filters", async ({ page }) => {
+		test("Panel of filters contains all required filters", async ({ basePage, taskPage }) => {
 			await test.step("Open task statuses page", async () => {
-				await BasePage.openPage(page, taskPage.pageName);
+				await basePage.openPage(taskPage.pageName);
 			});
 
 			await test.step("Check that all filters elements are displayed", async () => {
@@ -78,9 +52,9 @@ test.describe("TasksPage page tests", () => {
 			});
 		});
 
-		test("Table contains all required collumns", async ({ page }) => {
+		test("Table contains all required collumns", async ({ basePage, taskPage, page }) => {
 			await test.step("Open task statuses page", async () => {
-				await BasePage.openPage(page, taskPage.pageName);
+				await basePage.openPage(taskPage.pageName);
 			});
 
 			await test.step("Check that form selector elements are displayed", async () => {
@@ -92,9 +66,9 @@ test.describe("TasksPage page tests", () => {
 			});
 		});
 
-		test("A task contains all required elements", async ({ page }) => {
+		test("A task contains all required elements", async ({ basePage, taskPage }) => {
 			await test.step("Open task statuses page", async () => {
-				await BasePage.openPage(page, taskPage.pageName);
+				await basePage.openPage(taskPage.pageName);
 			});
 
 			await test.step("Check that task's elements are displayed", async () => {
@@ -112,9 +86,9 @@ test.describe("TasksPage page tests", () => {
 			});
 		});
 
-		test("A certain task contains correct data", async ({ page }) => {
+		test("A certain task contains correct data", async ({ basePage, taskPage }) => {
 			await test.step("Open task statuses page", async () => {
-				await BasePage.openPage(page, taskPage.pageName);
+				await basePage.openPage(taskPage.pageName);
 			});
 
 			await test.step("Check that a task contains correct data", async () => {
@@ -128,9 +102,9 @@ test.describe("TasksPage page tests", () => {
 			});
 		});
 
-		test("Filter tasks for certain assignee and check their count", async ({ page }) => {
+		test("Filter tasks for certain assignee and check their count", async ({ basePage, taskPage }) => {
 			await test.step("Open task statuses page", async () => {
-				await BasePage.openPage(page, taskPage.pageName);
+				await basePage.openPage(taskPage.pageName);
 			});
 
 			await test.step("Select certain assignee", async () => {
@@ -139,11 +113,11 @@ test.describe("TasksPage page tests", () => {
 			});
 
 			await test.step("Check that certain tasks are displayed in appropriate columns", async () => {
-				const tasksInDraft = await taskPage.getTasksInColumn(page, Status.DRAFT);
-				const tasksInToReview = await taskPage.getTasksInColumn(page, Status.TO_REVIEW);
-				const tasksInToFixed = await taskPage.getTasksInColumn(page, Status.TO_BE_FIXED);
-				const tasksInToPublish = await taskPage.getTasksInColumn(page, Status.TO_PUBLISH);
-				const tasksInPublished = await taskPage.getTasksInColumn(page, Status.PUBLISHED);
+				const tasksInDraft = await taskPage.getTasksInColumn(Status.DRAFT);
+				const tasksInToReview = await taskPage.getTasksInColumn(Status.TO_REVIEW);
+				const tasksInToFixed = await taskPage.getTasksInColumn(Status.TO_BE_FIXED);
+				const tasksInToPublish = await taskPage.getTasksInColumn(Status.TO_PUBLISH);
+				const tasksInPublished = await taskPage.getTasksInColumn(Status.PUBLISHED);
 
 				expect(tasksInDraft.length).toBe(2);
 				expect(tasksInToReview.length).toBe(1);
@@ -153,9 +127,9 @@ test.describe("TasksPage page tests", () => {
 			});
 		});
 
-		test("Filter tasks for certain status", async ({ page }) => {
+		test("Filter tasks for certain status", async ({ basePage, taskPage }) => {
 			await test.step("Open task statuses page", async () => {
-				await BasePage.openPage(page, taskPage.pageName);
+				await basePage.openPage(taskPage.pageName);
 			});
 
 			await test.step("Select certain status", async () => {
@@ -164,11 +138,11 @@ test.describe("TasksPage page tests", () => {
 			});
 
 			await test.step("Check that certain tasks are displayed in appropriate columns", async () => {
-				const tasksInDraft = await taskPage.getTasksInColumn(page, Status.DRAFT);
-				const tasksInToReview = await taskPage.getTasksInColumn(page, Status.TO_REVIEW);
-				const tasksInToFixed = await taskPage.getTasksInColumn(page, Status.TO_BE_FIXED);
-				const tasksInToPublish = await taskPage.getTasksInColumn(page, Status.TO_PUBLISH);
-				const tasksInPublished = await taskPage.getTasksInColumn(page, Status.PUBLISHED);
+				const tasksInDraft = await taskPage.getTasksInColumn(Status.DRAFT);
+				const tasksInToReview = await taskPage.getTasksInColumn(Status.TO_REVIEW);
+				const tasksInToFixed = await taskPage.getTasksInColumn(Status.TO_BE_FIXED);
+				const tasksInToPublish = await taskPage.getTasksInColumn(Status.TO_PUBLISH);
+				const tasksInPublished = await taskPage.getTasksInColumn(Status.PUBLISHED);
 
 				expect(tasksInDraft.length).toBe(3);
 				expect(tasksInToReview.length).toBe(0);
@@ -178,9 +152,9 @@ test.describe("TasksPage page tests", () => {
 			});
 		});
 
-		test("Filter tasks for certain label", async ({ page }) => {
+		test("Filter tasks for certain label", async ({ basePage, taskPage }) => {
 			await test.step("Open task statuses page", async () => {
-				await BasePage.openPage(page, taskPage.pageName);
+				await basePage.openPage(taskPage.pageName);
 			});
 
 			await test.step("Select certain label", async () => {
@@ -189,11 +163,11 @@ test.describe("TasksPage page tests", () => {
 			});
 
 			await test.step("Check that certain tasks are displayed in appropriate columns", async () => {
-				const tasksInDraft = await taskPage.getTasksInColumn(page, Status.DRAFT);
-				const tasksInToReview = await taskPage.getTasksInColumn(page, Status.TO_REVIEW);
-				const tasksInToFixed = await taskPage.getTasksInColumn(page, Status.TO_BE_FIXED);
-				const tasksInToPublish = await taskPage.getTasksInColumn(page, Status.TO_PUBLISH);
-				const tasksInPublished = await taskPage.getTasksInColumn(page, Status.PUBLISHED);
+				const tasksInDraft = await taskPage.getTasksInColumn(Status.DRAFT);
+				const tasksInToReview = await taskPage.getTasksInColumn(Status.TO_REVIEW);
+				const tasksInToFixed = await taskPage.getTasksInColumn(Status.TO_BE_FIXED);
+				const tasksInToPublish = await taskPage.getTasksInColumn(Status.TO_PUBLISH);
+				const tasksInPublished = await taskPage.getTasksInColumn(Status.PUBLISHED);
 
 				expect(tasksInDraft.length).toBe(0);
 				expect(tasksInToReview.length).toBe(0);
@@ -203,9 +177,9 @@ test.describe("TasksPage page tests", () => {
 			});
 		});
 
-		test("Filter tasks with certain name for certain assignee and check their names", async ({ page }) => {
+		test("Filter tasks with certain name for certain assignee and check their names", async ({ basePage, taskPage }) => {
 			await test.step("Open task statuses page", async () => {
-				await BasePage.openPage(page, taskPage.pageName);
+				await basePage.openPage(taskPage.pageName);
 			});
 
 			await test.step("Select certain assignee", async () => {
@@ -214,28 +188,28 @@ test.describe("TasksPage page tests", () => {
 			});
 
 			await test.step("Check that tasks with certain names are displayed in appropriate columns", async () => {
-				expect(await taskPage.isTaskWithNameInColumn(page, Status.DRAFT, "Task 11")).toBeTruthy();
-				expect(await taskPage.isTaskWithNameInColumn(page, Status.DRAFT, "Task 5")).toBeTruthy();
-				expect(await taskPage.isTaskWithNameInColumn(page, Status.TO_REVIEW, "Task 2")).toBeTruthy();
-				expect(await taskPage.isTaskWithNameInColumn(page, Status.TO_BE_FIXED, "Task 1")).toBeTruthy();
-				expect(await taskPage.isTaskWithNameInColumn(page, Status.PUBLISHED, "Task 15")).toBeTruthy();
+				expect(await taskPage.isTaskWithNameInColumn(Status.DRAFT, "Task 11")).toBeTruthy();
+				expect(await taskPage.isTaskWithNameInColumn(Status.DRAFT, "Task 5")).toBeTruthy();
+				expect(await taskPage.isTaskWithNameInColumn(Status.TO_REVIEW, "Task 2")).toBeTruthy();
+				expect(await taskPage.isTaskWithNameInColumn(Status.TO_BE_FIXED, "Task 1")).toBeTruthy();
+				expect(await taskPage.isTaskWithNameInColumn(Status.PUBLISHED, "Task 15")).toBeTruthy();
 			});
 		});
 
-		test("Drag task with certain name and drop it to appropriate column", async ({ page }) => {
+		test("Drag task with certain name and drop it to appropriate column", async ({ basePage, taskPage }) => {
 			await test.step("Open task statuses page", async () => {
-				await BasePage.openPage(page, taskPage.pageName);
+				await basePage.openPage(taskPage.pageName);
 			});
 
 			await test.step("Drag 'Task 11' and drop it to 'To Review' column", async () => {
 				const from = await taskPage.getTaskByNumber(11);
 				const to = await taskPage.getTaskByNumber(2);
 
-				await taskPage.dragTask(page, from, to);
+				await taskPage.dragTask(from, to);
 			});
 
 			await test.step("Check that certain tasks are displayed in appropriate columns", async () => {
-				expect(await taskPage.isTaskWithNameInColumn(page, Status.TO_REVIEW, "Task 11")).toBeTruthy();
+				expect(await taskPage.isTaskWithNameInColumn(Status.TO_REVIEW, "Task 11")).toBeTruthy();
 			});
 		});
 	});

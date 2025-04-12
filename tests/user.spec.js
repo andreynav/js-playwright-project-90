@@ -1,40 +1,14 @@
-import { DashboardPage, LoginPage, UserPage, BasePage } from "./co/index.js";
-import { loginCredentials, getNewUserData, checkIsEntityInTable, expectSuccessNotification, invalidEmail } from "./helpers/index.js";
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./co/co.js";
+import { getNewUserData, checkIsEntityInTable, expectSuccessNotification, invalidEmail } from "./helpers/index.js";
 
 test.describe("UserPage page tests", () => {
-	let userPage;
-	let basePage;
-	let createButtonLoc;
-
-	test.beforeEach(async ({ page }) => {
-		let loginPage;
-
-		await test.step("Open login page", async () => {
-			loginPage = new LoginPage(page);
-			await BasePage.openPage(page, loginPage.pageName);
-		});
-
-		await test.step("Log in with credentials", async () => {
-			await loginPage.login(loginCredentials);
-		});
-
-		await test.step("Check that logged in successfully", async () => {
-			const dashboardPage = new DashboardPage(page);
-			await expect(dashboardPage.dashboardTitleLoc).toBeVisible();
-			userPage = new UserPage(page);
-			basePage = new BasePage(page);
-			createButtonLoc = await basePage.getCreateEntityLoc(userPage.pageName);
-		});
-	});
-
-	test("Create a new user form contains all required fields", async ({ page }) => {
+	test("Create a new user form contains all required fields", async ({ basePage, userPage }) => {
 		await test.step("Open users page", async () => {
-			await BasePage.openPage(page, userPage.pageName);
+			await basePage.openPage(userPage.pageName);
 		});
 
 		await test.step('Click the button "Create new user"', async () => {
-			await createButtonLoc.click();
+			await basePage.getCreateEntityLoc(userPage.pageName).click();
 		});
 
 		await test.step("Check that users form elements are displayed", async () => {
@@ -45,15 +19,15 @@ test.describe("UserPage page tests", () => {
 		});
 	});
 
-	test("Create a new user", async ({ page }) => {
+	test("Create a new user", async ({ basePage, userPage, page }) => {
 		const newUser = await getNewUserData();
 
 		await test.step("Open users page", async () => {
-			await BasePage.openPage(page, userPage.pageName);
+			await basePage.openPage(userPage.pageName);
 		});
 
 		await test.step('Click the button "Create new user"', async () => {
-			await createButtonLoc.click();
+			await basePage.getCreateEntityLoc(userPage.pageName).click();
 		});
 
 		await test.step("Create a new user", async () => {
@@ -62,14 +36,14 @@ test.describe("UserPage page tests", () => {
 		});
 
 		await test.step("Check that user is displayed in the table", async () => {
-			await BasePage.openPage(page, userPage.pageName);
+			await basePage.openPage(userPage.pageName);
 			await checkIsEntityInTable(page, newUser.email, true);
 		});
 	});
 
-	test("Header of table contains all required cells", async ({ page }) => {
+	test("Header of table contains all required cells", async ({ basePage, userPage }) => {
 		await test.step("Open users page", async () => {
-			await BasePage.openPage(page, userPage.pageName);
+			await basePage.openPage(userPage.pageName);
 		});
 
 		await test.step("Check that form header elements are displayed", async () => {
@@ -77,14 +51,14 @@ test.describe("UserPage page tests", () => {
 			await expect(basePage.selectAllCheckboxLoc).toBeVisible();
 
 			for (let i = 0; i < userPage.cellNames.length; i++) {
-				await expect(await BasePage.getHeaderCellByTextLocator(page, userPage.cellNames[i])).toBeVisible();
+				await expect(await basePage.getHeaderCellByTextLocator(userPage.cellNames[i])).toBeVisible();
 			}
 		});
 	});
 
-	test("Table of users has rows", async ({ page }) => {
+	test("Table of users has rows", async ({ basePage, userPage }) => {
 		await test.step("Open users page", async () => {
-			await BasePage.openPage(page, userPage.pageName);
+			await basePage.openPage(userPage.pageName);
 		});
 
 		await test.step("Check that users more than one in the table", async () => {
@@ -95,31 +69,31 @@ test.describe("UserPage page tests", () => {
 		});
 	});
 
-	test("A user row contains correct data", async ({ page }) => {
+	test("A user row contains correct data", async ({ basePage, userPage }) => {
 		await test.step("Open users page", async () => {
-			await BasePage.openPage(page, userPage.pageName);
+			await basePage.openPage(userPage.pageName);
 		});
 
 		await test.step("Check that user contains correct data", async () => {
-            const rowCellLocOne = await BasePage.getRowCellLoc(page, 0, 1);
-            const rowCellLocTwo = await BasePage.getRowCellLoc(page, 0, 2);
-            const rowCellLocThree = await BasePage.getRowCellLoc(page, 0, 3);
-            const rowCellLocFour = await BasePage.getRowCellLoc(page, 0, 4);
-            const rowCellLocFive = await BasePage.getRowCellLoc(page, 0, 5);
+			const rowCellLocOne = await basePage.getRowCellLoc(0, 1);
+			const rowCellLocTwo = await basePage.getRowCellLoc(0, 2);
+			const rowCellLocThree = await basePage.getRowCellLoc(0, 3);
+			const rowCellLocFour = await basePage.getRowCellLoc(0, 4);
+			const rowCellLocFive = await basePage.getRowCellLoc(0, 5);
 
-			await expect(rowCellLocOne).toContainText(BasePage.idRegEx);
+			await expect(rowCellLocOne).toContainText(basePage.idRegEx);
 			await expect(rowCellLocTwo).toContainText(userPage.emailRegEx);
-			await expect(rowCellLocThree).toContainText(BasePage.nameRegEx);
-			await expect(rowCellLocFour).toContainText(BasePage.nameRegEx);
-			await expect(rowCellLocFive).toContainText(BasePage.dateRegEx);
+			await expect(rowCellLocThree).toContainText(basePage.nameRegEx);
+			await expect(rowCellLocFour).toContainText(basePage.nameRegEx);
+			await expect(rowCellLocFive).toContainText(basePage.dateRegEx);
 		});
 	});
 
-	test("Edit user form has correct elements", async ({ page }) => {
-        const userId = 1;
+	test("Edit user form has correct elements", async ({ basePage, userPage }) => {
+		const userId = 1;
 
 		await test.step("Open certain user page", async () => {
-            await BasePage.openPage(page, userPage.pageName, userId);
+			await basePage.openPage(userPage.pageName, userId);
 		});
 
 		await test.step("Check that user form elements are displayed", async () => {
@@ -132,17 +106,17 @@ test.describe("UserPage page tests", () => {
 		});
 	});
 
-	test("Edit a user with correct data", async ({ page }) => {
+	test("Edit a user with correct data", async ({ basePage, userPage, page }) => {
 		const newUser = await getNewUserData();
 		const userId = 9;
 
 		await test.step("Create a new user", async () => {
 			await test.step("Open users page", async () => {
-				await BasePage.openPage(page, userPage.pageName);
+				await basePage.openPage(userPage.pageName);
 			});
 
 			await test.step('Click the button "Create new user"', async () => {
-				await createButtonLoc.click();
+				await basePage.getCreateEntityLoc(userPage.pageName).click();
 			});
 
 			await test.step("Create a new user", async () => {
@@ -155,28 +129,28 @@ test.describe("UserPage page tests", () => {
 
 		await test.step("Edit the new user with valid data", async () => {
 			await test.step("Open certain user page", async () => {
-				await BasePage.openPage(page, userPage.pageName, userId);
+				await basePage.openPage(userPage.pageName, userId);
 			});
 
 			await test.step("Edit certain user by valid data", async () => {
 				await userPage.fillUserFormByData(newUser2);
 				await expectSuccessNotification(page, "Element updated");
-				await expect(await BasePage.getRowByTextLoc(page, newUser2.email)).toBeVisible();
+				await expect(await basePage.getRowByTextLoc(newUser2.email)).toBeVisible();
 			});
 		});
 	});
 
-	test("Edit a user with incorrect email", async ({ page }) => {
+	test("Edit a user with incorrect email", async ({ basePage, userPage, page }) => {
 		const newUser = await getNewUserData();
 		const userId = 9;
 
 		await test.step("Create a new user", async () => {
 			await test.step("Open users page", async () => {
-				await BasePage.openPage(page, userPage.pageName);
+				await basePage.openPage(userPage.pageName);
 			});
 
 			await test.step('Click the button "Create new user"', async () => {
-				await createButtonLoc.click();
+				await basePage.getCreateEntityLoc(userPage.pageName).click();
 			});
 
 			await test.step("Create a new user", async () => {
@@ -189,7 +163,7 @@ test.describe("UserPage page tests", () => {
 
 		await test.step("Edit the new user with invalid data", async () => {
 			await test.step("Open certain user page", async () => {
-                await BasePage.openPage(page, userPage.pageName, userId);
+				await basePage.openPage(userPage.pageName, userId);
 			});
 
 			await test.step("Edit certain user by invalid data", async () => {
@@ -199,17 +173,17 @@ test.describe("UserPage page tests", () => {
 		});
 	});
 
-	test("Delete a user", async ({ page }) => {
+	test("Delete a user", async ({ basePage, userPage, page }) => {
 		const newUser = await getNewUserData();
 		const userId = 9;
 
 		await test.step("Create a new user", async () => {
 			await test.step("Open users page", async () => {
-				await BasePage.openPage(page, userPage.pageName);
+				await basePage.openPage(userPage.pageName);
 			});
 
 			await test.step('Click the button "Create new user"', async () => {
-				await createButtonLoc.click();
+				await basePage.getCreateEntityLoc(userPage.pageName).click();
 			});
 
 			await test.step("Create a new user", async () => {
@@ -220,7 +194,7 @@ test.describe("UserPage page tests", () => {
 
 		await test.step("Delete the new user", async () => {
 			await test.step("Open certain user page", async () => {
-                await BasePage.openPage(page, userPage.pageName, userId);
+				await basePage.openPage(userPage.pageName, userId);
 			});
 
 			await test.step("Delete the new user", async () => {
@@ -229,15 +203,15 @@ test.describe("UserPage page tests", () => {
 			});
 
 			await test.step("Check that user is not displayed in the table", async () => {
-				await BasePage.openPage(page, userPage.pageName);
+				await basePage.openPage(userPage.pageName);
 				await checkIsEntityInTable(page, newUser.email);
 			});
 		});
 	});
 
-	test("Bulk delete users", async ({ page }) => {
+	test("Bulk delete users", async ({ basePage, userPage, page }) => {
 		await test.step("Open users page", async () => {
-			await BasePage.openPage(page, userPage.pageName);
+			await basePage.openPage(userPage.pageName);
 		});
 
 		await test.step('Click the button "Select All"', async () => {

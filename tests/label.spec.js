@@ -1,40 +1,14 @@
-import { DashboardPage, LoginPage, LabelPage, BasePage } from "./co/index.js";
-import { loginCredentials, expectSuccessNotification, checkIsEntityInTable } from "./helpers/index.js";
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./co/co.js";
+import { expectSuccessNotification, checkIsEntityInTable } from "./helpers/index.js";
 
 test.describe("LabelPage tests", () => {
-	let labelPage;
-	let basePage;
-	let createButtonLoc;
-
-	test.beforeEach(async ({ page }) => {
-		let loginPage;
-
-		await test.step("Open login page", async () => {
-			loginPage = new LoginPage(page);
-			await BasePage.openPage(page, loginPage.pageName);
-		});
-
-		await test.step("Log in with credentials", async () => {
-			await loginPage.login(loginCredentials);
-		});
-
-		await test.step("Check that logged in successfully", async () => {
-			const dashboardPage = new DashboardPage(page);
-			await expect(dashboardPage.dashboardTitleLoc).toBeVisible();
-			labelPage = new LabelPage(page);
-			basePage = new BasePage(page);
-			createButtonLoc = await basePage.getCreateEntityLoc(labelPage.pageName);
-		});
-	});
-
-	test("Create a label form contains all required fields", async ({ page }) => {
+	test("Create a label form contains all required fields", async ({ basePage, labelPage }) => {
 		await test.step("Open labels page", async () => {
-			await BasePage.openPage(page, labelPage.pageName);
+			await basePage.openPage(labelPage.pageName);
 		});
 
 		await test.step('Click the button "Create new Label"', async () => {
-			await createButtonLoc.click();
+			await basePage.getCreateEntityLoc(labelPage.pageName).click();
 		});
 
 		await test.step("Check that new Label form elements are displayed", async () => {
@@ -44,15 +18,15 @@ test.describe("LabelPage tests", () => {
 		});
 	});
 
-	test("Create new label", async ({ page }) => {
+	test("Create new label", async ({ basePage, labelPage, page }) => {
 		const label = "design";
 
 		await test.step("Open labels page", async () => {
-			await BasePage.openPage(page, labelPage.pageName);
+			await basePage.openPage(labelPage.pageName);
 		});
 
 		await test.step('Click the button "Create new Label"', async () => {
-			await createButtonLoc.click();
+			await basePage.getCreateEntityLoc(labelPage.pageName).click();
 		});
 
 		await test.step("Create a new label", async () => {
@@ -61,9 +35,9 @@ test.describe("LabelPage tests", () => {
 		});
 	});
 
-	test("Header of table contains all required cells", async ({ page }) => {
+	test("Header of table contains all required cells", async ({ basePage, labelPage }) => {
 		await test.step("Open labels page", async () => {
-			await BasePage.openPage(page, labelPage.pageName);
+			await basePage.openPage(labelPage.pageName);
 		});
 
 		await test.step("Check that form header elements are displayed", async () => {
@@ -71,32 +45,32 @@ test.describe("LabelPage tests", () => {
 			await expect(basePage.selectAllCheckboxLoc).toBeVisible();
 
 			for (let i = 0; i < labelPage.cellNames.length; i++) {
-				await expect(await BasePage.getHeaderCellByTextLocator(page, labelPage.cellNames[i])).toBeVisible();
+				await expect(await basePage.getHeaderCellByTextLocator(labelPage.cellNames[i])).toBeVisible();
 			}
 		});
 	});
 
-	test("A label row contains correct data", async ({ page }) => {
+	test("A label row contains correct data", async ({ basePage, labelPage }) => {
 		await test.step("Open labels page", async () => {
-			await BasePage.openPage(page, "labelPage");
+			await basePage.openPage(labelPage.pageName);
 		});
 
 		await test.step("Check that label page contains correct data", async () => {
-			const rowCellLocOne = await BasePage.getRowCellLoc(page, 0, 1);
-			const rowCellLocTwo = await BasePage.getRowCellLoc(page, 0, 2);
-			const rowCellLocThree = await BasePage.getRowCellLoc(page, 0, 3);
+			const rowCellLocOne = await basePage.getRowCellLoc(0, 1);
+			const rowCellLocTwo = await basePage.getRowCellLoc(0, 2);
+			const rowCellLocThree = await basePage.getRowCellLoc(0, 3);
 
-			await expect(rowCellLocOne).toContainText(BasePage.idRegEx);
-			await expect(rowCellLocTwo).toContainText(BasePage.nameRegEx);
-			await expect(rowCellLocThree).toContainText(BasePage.dateRegEx);
+			await expect(rowCellLocOne).toContainText(basePage.idRegEx);
+			await expect(rowCellLocTwo).toContainText(basePage.nameRegEx);
+			await expect(rowCellLocThree).toContainText(basePage.dateRegEx);
 		});
 	});
 
-	test("Task label form has correct elements", async ({ page }) => {
+	test("Task label form has correct elements", async ({ basePage, labelPage }) => {
 		const labelId = 1;
 
 		await test.step("Open certain label page", async () => {
-			await BasePage.openPage(page, labelPage.pageName, labelId);
+			await basePage.openPage(labelPage.pageName, labelId);
 		});
 
 		await test.step("Check that label form elements are displayed", async () => {
@@ -107,16 +81,16 @@ test.describe("LabelPage tests", () => {
 		});
 	});
 
-	test("Edit a label with correct data", async ({ page }) => {
+	test("Edit a label with correct data", async ({ basePage, labelPage, page }) => {
 		await test.step("Create new label ", async () => {
 			const label = "design";
 
 			await test.step("Open labels page", async () => {
-				await BasePage.openPage(page, labelPage.pageName);
+				await basePage.openPage(labelPage.pageName);
 			});
 
 			await test.step('Click the button "Create new Label"', async () => {
-				await createButtonLoc.click();
+				await basePage.getCreateEntityLoc(labelPage.pageName).click();
 			});
 
 			await test.step("Create a new label", async () => {
@@ -130,27 +104,27 @@ test.describe("LabelPage tests", () => {
 			const labelId = 6;
 
 			await test.step("Open certain label page", async () => {
-				await BasePage.openPage(page, "labelPage", labelId);
+				await basePage.openPage(labelPage.pageName, labelId);
 			});
 
 			await test.step("Edit certain label by valid data", async () => {
 				await labelPage.fillLabelFormByData(label2);
 				await expectSuccessNotification(page, "Element updated");
-				await expect(await BasePage.getRowByTextLoc(page, label2)).toBeVisible();
+				await expect(await basePage.getRowByTextLoc(label2)).toBeVisible();
 			});
 		});
 	});
 
-	test("Delete a label", async ({ page }) => {
+	test("Delete a label", async ({ basePage, labelPage, page }) => {
 		const label = "design";
 
 		await test.step("Create new label ", async () => {
 			await test.step("Open labels page", async () => {
-				await BasePage.openPage(page, labelPage.pageName);
+				await basePage.openPage(labelPage.pageName);
 			});
 
 			await test.step('Click the button "Create new Label"', async () => {
-				await createButtonLoc.click();
+				await basePage.getCreateEntityLoc(labelPage.pageName).click();
 			});
 
 			await test.step("Create a new label", async () => {
@@ -163,7 +137,7 @@ test.describe("LabelPage tests", () => {
 			const labelId = 6;
 
 			await test.step("Open certain label page", async () => {
-				await BasePage.openPage(page, labelPage.pageName, labelId);
+				await basePage.openPage(labelPage.pageName, labelId);
 			});
 
 			await test.step("Delete the new label", async () => {
@@ -172,15 +146,15 @@ test.describe("LabelPage tests", () => {
 			});
 
 			await test.step("Check that label is not displayed in the table", async () => {
-				await BasePage.openPage(page, labelPage.pageName);
+				await basePage.openPage(labelPage.pageName);
 				await checkIsEntityInTable(page, label);
 			});
 		});
 	});
 
-	test("Bulk delete labels", async ({ page }) => {
+	test("Bulk delete labels", async ({ basePage, labelPage, page }) => {
 		await test.step("Open labels page", async () => {
-			await BasePage.openPage(page, labelPage.pageName);
+			await basePage.openPage(labelPage.pageName);
 		});
 
 		await test.step('Click the button "Select All"', async () => {

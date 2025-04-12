@@ -1,90 +1,90 @@
 export class BasePage {
+	constructor(page) {
+		this.page = page;
+		this.loginPage = "#/login/";
+		this.userSlug = "#/users/";
+		this.taskStatusSlug = "#/task_statuses/";
+		this.labelSlug = "#/labels/";
+		this.taskSlug = "#/tasks/";
 
-    static idRegEx = /^\d+/;
-    static nameRegEx = /\b[a-zA-Z][a-zA-Z]*\b/;
-    static dateRegEx = /^(\d{1,2}\/\d{1,2}\/\d{4}, \d{1,2}:\d{2}:\d{2} (AM|PM)|\d{1,2}\.\d{1,2}\.\d{4}, \d{2}:\d{2}:\d{2})$/;
-    static userSlug = '#/users/';
-    static taskStatusSlug = '#/task_statuses/';
-    static labelSlug = '#/labels/';
-    static taskSlug = '#/tasks/';
-    static loginPage = '#/login/'
+		this.idRegEx = /^\d+/;
+		this.nameRegEx = /\b[a-zA-Z][a-zA-Z]*\b/;
+		this.dateRegEx = /^(\d{1,2}\/\d{1,2}\/\d{4}, \d{1,2}:\d{2}:\d{2} (AM|PM)|\d{1,2}\.\d{1,2}\.\d{4}, \d{2}:\d{2}:\d{2})$/;
 
-    constructor(page) {
-        this.page = page;
-        this.rootLoc = page.locator('div.MuiPaper-root.MuiCard-root.RaCreate-card');
-        this.showButtonLoc = page.getByRole('link', { name: 'Show' });
-        this.saveButtonLoc = page.getByRole('button', { name: 'Save' });
-        this.deleteButtonLoc = page.getByRole('button', { name: 'Delete' });
-        this.headerRowLoc = page.locator('tr.RaDatagrid-headerRow');
-        this.rowLoc = page.locator('tr.RaDatagrid-clickableRow');
-        this.selectAllCheckboxLoc = page.getByRole('checkbox', { name: 'Select all' });
-    }
+		this.rootLoc = page.locator("div.MuiPaper-root.MuiCard-root.RaCreate-card");
+		this.showButtonLoc = page.getByRole("link", { name: "Show" });
+		this.saveButtonLoc = page.getByRole("button", { name: "Save" });
+		this.deleteButtonLoc = page.getByRole("button", { name: "Delete" });
+		this.headerRowLoc = page.locator("tr.RaDatagrid-headerRow");
+		this.rowLoc = page.locator("tr.RaDatagrid-clickableRow");
+		this.selectAllCheckboxLoc = page.getByRole("checkbox", { name: "Select all" });
+	}
 
-    static async openPage(page, pageName, id) {
-        let url = '';
-        switch (pageName) {
-            case 'loginPage':
-                url = `/${this.loginPage}`;
-                break;
-            case 'userPage':
-                url = `/${this.userSlug}`;
-                break;
-            case 'taskStatusesPage':
-                url = `/${this.taskStatusSlug}`;
-                break;
-            case 'labelPage':
-                url = `/${this.labelSlug}`;
-                break;
-            case 'taskPage':
-                url = `/${this.taskSlug}`;
-                break;
-            default:
-                url = '/#/'
-                break;
-        };
+	async openPage(pageName, id) {
+		let url = "";
+		switch (pageName) {
+			case "loginPage":
+				url = `/${this.loginPage}`;
+				break;
+			case "userPage":
+				url = `/${this.userSlug}`;
+				break;
+			case "taskStatusesPage":
+				url = `/${this.taskStatusSlug}`;
+				break;
+			case "labelPage":
+				url = `/${this.labelSlug}`;
+				break;
+			case "taskPage":
+				url = `/${this.taskSlug}`;
+				break;
+			default:
+				url = "/#/";
+				break;
+		}
 
-        let resUrl = id ? `${url}${id}` : url;
+		let resUrl = id ? `${url}${id}` : url;
 
-        await page.goto(resUrl)
-    }
+		await this.page.goto(resUrl);
+	}
 
-    async getCreateEntityLoc(pageName) {
-        let slug = '';
-        switch (pageName) {
-            case 'userPage':
-                slug = BasePage.userSlug;
-                break;
-            case 'taskStatusesPage':
-                slug = BasePage.taskStatusSlug;
-                break;
-            case 'labelPage':
-                slug = BasePage.labelSlug;
-                break;
-            case 'taskPage':
-                slug = BasePage.taskSlug;
-                break;
-            default:
-                slug = '/#/'
-                break;
-        };
+	getCreateEntityLoc(pageName) {
+		let slug = "";
+		switch (pageName) {
+			case "userPage":
+				slug = this.userSlug;
+				break;
+			case "taskStatusesPage":
+				slug = this.taskStatusSlug;
+				break;
+			case "labelPage":
+				slug = this.labelSlug;
+				break;
+			case "taskPage":
+				slug = this.taskSlug;
+				break;
+			default:
+				slug = "/#/";
+				break;
+		}
 
-        return this.page.locator(`a[href*="${slug}create"]`);
-    }
+		return this.page.locator(`a[href*="${slug}create"]`);
+	}
 
-    static async getHeaderCellByTextLocator(page, text) {
-        return page.getByRole('button', { name: text });
-    }
+	async getHeaderCellByTextLocator(text) {
+		return this.page.getByRole("button", { name: text });
+	}
 
-    static getRowLocator(page) {
-        return page.locator('tr.RaDatagrid-clickableRow');
-    }
+	getRowLocator() {
+		return this.page.locator("tr.RaDatagrid-clickableRow");
+	}
 
-    static async getRowCellLoc(page, rowNum, cellNum) {
-        const rowLoc = this.getRowLocator(page);
-        return rowLoc.nth(rowNum).locator('td').nth(cellNum);
-    }
+	async getRowCellLoc(rowNum, cellNum) {
+		const rowLoc = this.getRowLocator();
+		return rowLoc.nth(rowNum).locator("td").nth(cellNum);
+	}
 
-    static async getRowByTextLoc(page, text) {
-        return page.getByRole('row').filter({ hasText: text });
-    }
+	async getRowByTextLoc(text) {
+		return this.page.getByRole("row").filter({ hasText: text });
+	}
 }

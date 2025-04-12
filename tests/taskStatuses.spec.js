@@ -1,41 +1,15 @@
-import { DashboardPage, LoginPage, TaskStatusesPage, BasePage } from "./co/index.js";
-import { loginCredentials, expectSuccessNotification, checkIsEntityInTable } from "./helpers/index.js";
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./co/co.js";
+import { expectSuccessNotification, checkIsEntityInTable } from "./helpers/index.js";
 
 test.describe("TasksStatusesPage tests", () => {
 	test.describe("Task statuses tests", () => {
-		let taskStatusesPage;
-		let basePage;
-		let createButtonLoc;
-
-		test.beforeEach(async ({ page }) => {
-			let loginPage;
-
-			await test.step("Open login page", async () => {
-				loginPage = new LoginPage(page);
-				await BasePage.openPage(page, loginPage.pageName);
-			});
-
-			await test.step("Log in with credentials", async () => {
-				await loginPage.login(loginCredentials);
-			});
-
-			await test.step("Check that logged in successfully", async () => {
-				const dashboardPage = new DashboardPage(page);
-				await expect(dashboardPage.dashboardTitleLoc).toBeVisible();
-				taskStatusesPage = new TaskStatusesPage(page);
-				basePage = new BasePage(page);
-				createButtonLoc = await basePage.getCreateEntityLoc(taskStatusesPage.pageName);
-			});
-		});
-
-		test("Create a new task status form contains all required fields", async ({ page }) => {
+		test("Create a new task status form contains all required fields", async ({ basePage, taskStatusesPage }) => {
 			await test.step("Open task statuses page", async () => {
-				await BasePage.openPage(page, taskStatusesPage.pageName);
+				await basePage.openPage(taskStatusesPage.pageName);
 			});
 
 			await test.step('Click the button "Create new task status"', async () => {
-				await createButtonLoc.click();
+				await basePage.getCreateEntityLoc(taskStatusesPage.pageName).click();
 			});
 
 			await test.step("Check that new task status form elements are displayed", async () => {
@@ -46,15 +20,15 @@ test.describe("TasksStatusesPage tests", () => {
 			});
 		});
 
-		test("Create new task status", async ({ page }) => {
+		test("Create new task status", async ({ basePage, taskStatusesPage, page }) => {
 			const status = { name: "To Design", slug: "to_design" };
 
 			await test.step("Open task statuses page", async () => {
-				await BasePage.openPage(page, taskStatusesPage.pageName);
+				await basePage.openPage(taskStatusesPage.pageName);
 			});
 
 			await test.step('Click the button "Create new task status"', async () => {
-				await createButtonLoc.click();
+				await basePage.getCreateEntityLoc(taskStatusesPage.pageName).click();
 			});
 
 			await test.step("Create a new task status", async () => {
@@ -63,9 +37,9 @@ test.describe("TasksStatusesPage tests", () => {
 			});
 		});
 
-		test("Header of table contains all required cells", async ({ page }) => {
+		test("Header of table contains all required cells", async ({ basePage, taskStatusesPage }) => {
 			await test.step("Open task statuses page", async () => {
-				await BasePage.openPage(page, taskStatusesPage.pageName);
+				await basePage.openPage(taskStatusesPage.pageName);
 			});
 
 			await test.step("Check that form header elements are displayed", async () => {
@@ -73,34 +47,34 @@ test.describe("TasksStatusesPage tests", () => {
 				await expect(basePage.selectAllCheckboxLoc).toBeVisible();
 
 				for (let i = 0; i < taskStatusesPage.cellNames.length; i++) {
-					await expect(await BasePage.getHeaderCellByTextLocator(page, taskStatusesPage.cellNames[i])).toBeVisible();
+					await expect(await basePage.getHeaderCellByTextLocator(taskStatusesPage.cellNames[i])).toBeVisible();
 				}
 			});
 		});
 
-		test("A status row contains correct data", async ({ page }) => {
+		test("A status row contains correct data", async ({ basePage, taskStatusesPage }) => {
 			await test.step("Open task statuses page", async () => {
-				await BasePage.openPage(page, taskStatusesPage.pageName);
+				await basePage.openPage(taskStatusesPage.pageName);
 			});
 
 			await test.step("Check that task statuses page contains correct data", async () => {
-                const rowCellLocOne = await BasePage.getRowCellLoc(page, 0, 1);
-                const rowCellLocTwo = await BasePage.getRowCellLoc(page, 0, 2);
-                const rowCellLocThree = await BasePage.getRowCellLoc(page, 0, 3);
-                const rowCellLocFour = await BasePage.getRowCellLoc(page, 0, 4);
+				const rowCellLocOne = await basePage.getRowCellLoc(0, 1);
+				const rowCellLocTwo = await basePage.getRowCellLoc(0, 2);
+				const rowCellLocThree = await basePage.getRowCellLoc(0, 3);
+				const rowCellLocFour = await basePage.getRowCellLoc(0, 4);
 
-				await expect(rowCellLocOne).toContainText(BasePage.idRegEx);
-				await expect(rowCellLocTwo).toContainText(BasePage.nameRegEx);
+				await expect(rowCellLocOne).toContainText(basePage.idRegEx);
+				await expect(rowCellLocTwo).toContainText(basePage.nameRegEx);
 				await expect(rowCellLocThree).toContainText(taskStatusesPage.slugRegEx);
-				await expect(rowCellLocFour).toContainText(BasePage.dateRegEx);
+				await expect(rowCellLocFour).toContainText(basePage.dateRegEx);
 			});
 		});
 
-		test("Task statuses form has correct elements", async ({ page }) => {
-            const statusId = 1;
+		test("Task statuses form has correct elements", async ({ basePage, taskStatusesPage }) => {
+			const statusId = 1;
 
 			await test.step("Open certain user page", async () => {
-				await BasePage.openPage(page, taskStatusesPage.pageName, statusId);
+				await basePage.openPage(taskStatusesPage.pageName, statusId);
 			});
 
 			await test.step("Check that task status form elements are displayed", async () => {
@@ -112,16 +86,16 @@ test.describe("TasksStatusesPage tests", () => {
 			});
 		});
 
-		test("Edit a status with correct data", async ({ page }) => {
+		test("Edit a status with correct data", async ({ basePage, taskStatusesPage, page }) => {
 			await test.step("Create new task status", async () => {
 				const status = { name: "To Design", slug: "to_design" };
 
 				await test.step("Open task statuses page", async () => {
-					await BasePage.openPage(page, taskStatusesPage.pageName);
+					await basePage.openPage(taskStatusesPage.pageName);
 				});
 
 				await test.step('Click the button "Create new task status"', async () => {
-					await createButtonLoc.click();
+					await basePage.getCreateEntityLoc(taskStatusesPage.pageName).click();
 				});
 
 				await test.step("Create a new task status", async () => {
@@ -135,27 +109,27 @@ test.describe("TasksStatusesPage tests", () => {
 				const statusId = 6;
 
 				await test.step("Open certain task status page", async () => {
-					await BasePage.openPage(page, taskStatusesPage.pageName, statusId);
+					await basePage.openPage(taskStatusesPage.pageName, statusId);
 				});
 
 				await test.step("Edit certain task status by valid data", async () => {
 					await taskStatusesPage.fillTaskStatusFormByData(status2);
 					await expectSuccessNotification(page, "Element updated");
-                    await checkIsEntityInTable(page, status2.name);
+					await checkIsEntityInTable(page, status2.name);
 				});
 			});
 		});
 
-		test("Delete a task status", async ({ page }) => {
+		test("Delete a task status", async ({ basePage, taskStatusesPage, page }) => {
 			const status = { name: "To Design", slug: "to_design" };
 
 			await test.step("Create new task status", async () => {
 				await test.step("Open task statuses page", async () => {
-					await BasePage.openPage(page, taskStatusesPage.pageName);
+					await basePage.openPage(taskStatusesPage.pageName);
 				});
 
 				await test.step('Click the button "Create new task status"', async () => {
-					await createButtonLoc.click();
+					await basePage.getCreateEntityLoc(taskStatusesPage.pageName).click();
 				});
 
 				await test.step("Create a new task status", async () => {
@@ -168,7 +142,7 @@ test.describe("TasksStatusesPage tests", () => {
 				const statusId = 6;
 
 				await test.step("Open certain task status page", async () => {
-					await BasePage.openPage(page, taskStatusesPage.pageName, statusId);
+					await basePage.openPage(taskStatusesPage.pageName, statusId);
 				});
 
 				await test.step("Delete the new status", async () => {
@@ -177,15 +151,15 @@ test.describe("TasksStatusesPage tests", () => {
 				});
 
 				await test.step("Check that status is not displayed in the table", async () => {
-					await BasePage.openPage(page, taskStatusesPage.pageName);
+					await basePage.openPage(taskStatusesPage.pageName);
 					await checkIsEntityInTable(page, status.name);
 				});
 			});
 		});
 
-		test("Bulk delete statuses", async ({ page }) => {
+		test("Bulk delete statuses", async ({ basePage, taskStatusesPage, page }) => {
 			await test.step("Open task statuses page", async () => {
-				await BasePage.openPage(page, taskStatusesPage.pageName);
+				await basePage.openPage(taskStatusesPage.pageName);
 			});
 
 			await test.step('Click the button "Select All"', async () => {
