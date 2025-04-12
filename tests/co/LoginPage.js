@@ -6,15 +6,15 @@ export class LoginPage extends BasePage {
 		this.page = page;
 		this.pageName = "loginPage";
 
-		this.rootLoc = page.locator("div.MuiPaper-root.MuiCard-root.RaLogin-card");
-		this.usernameInputLoc = page.getByRole("textbox", { name: "Username" });
-		this.passwordInputLoc = page.getByRole("textbox", { name: "Password" });
-		this.signInButtonLoc = page.getByRole("button", { name: "Sign in" });
+		this.root = page.locator("div.MuiPaper-root.MuiCard-root.RaLogin-card");
+		this.inputUsername = page.getByRole("textbox", { name: "Username" });
+		this.inputPassword = page.getByRole("textbox", { name: "Password" });
+		this.buttonSignIn = page.getByRole("button", { name: "Sign in" });
 	}
 
 	async login(userCredentials) {
-		await this.usernameInputLoc.fill(userCredentials.username);
-		await this.passwordInputLoc.fill(userCredentials.password);
-		await this.signInButtonLoc.click();
+		await this.inputUsername.fill(userCredentials.username);
+		await this.inputPassword.fill(userCredentials.password);
+		await this.buttonSignIn.click();
 	}
 }

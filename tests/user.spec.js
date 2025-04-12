@@ -11,10 +11,10 @@ test.describe("UserPage page tests", () => {
 		});
 
 		await test.step("Check that users form elements are displayed", async () => {
-			await expect(basePage.rootLoc).toBeVisible();
-			await expect(userPage.createNewUserEmailInputLoc).toBeVisible();
-			await expect(userPage.createNewUserFNameInputLoc).toBeVisible();
-			await expect(userPage.createNewUserLNameInputLoc).toBeVisible();
+			await expect(basePage.root).toBeVisible();
+			await expect(userPage.inputEmail).toBeVisible();
+			await expect(userPage.inputFirstName).toBeVisible();
+			await expect(userPage.inputLastName).toBeVisible();
 		});
 	});
 
@@ -30,7 +30,7 @@ test.describe("UserPage page tests", () => {
 		});
 
 		await test.step("Create a new user", async () => {
-			await userPage.fillUserFormByData(newUser);
+			await userPage.fillUserForm(newUser);
 			await basePage.expectNotification("Element created");
 		});
 
@@ -46,8 +46,8 @@ test.describe("UserPage page tests", () => {
 		});
 
 		await test.step("Check that form header elements are displayed", async () => {
-			await expect(basePage.headerRowLoc).toBeVisible();
-			await expect(basePage.selectAllCheckboxLoc).toBeVisible();
+			await expect(basePage.headerRow).toBeVisible();
+			await expect(basePage.checkboxSelectAll).toBeVisible();
 
 			for (let i = 0; i < userPage.cellNames.length; i++) {
 				await expect(await basePage.getHeaderCellByTextLocator(userPage.cellNames[i])).toBeVisible();
@@ -61,9 +61,9 @@ test.describe("UserPage page tests", () => {
 		});
 
 		await test.step("Check that users more than one in the table", async () => {
-			await expect(basePage.rowLoc.first()).toBeVisible();
+			await expect(basePage.row.first()).toBeVisible();
 
-			const count = await basePage.rowLoc.count();
+			const count = await basePage.row.count();
 			await expect(count > 1).toBeTruthy();
 		});
 	});
@@ -74,11 +74,11 @@ test.describe("UserPage page tests", () => {
 		});
 
 		await test.step("Check that user contains correct data", async () => {
-			const rowCellLocOne = await basePage.getRowCellLoc(0, 1);
-			const rowCellLocTwo = await basePage.getRowCellLoc(0, 2);
-			const rowCellLocThree = await basePage.getRowCellLoc(0, 3);
-			const rowCellLocFour = await basePage.getRowCellLoc(0, 4);
-			const rowCellLocFive = await basePage.getRowCellLoc(0, 5);
+			const rowCellLocOne = await basePage.getRowCellLocator(0, 1);
+			const rowCellLocTwo = await basePage.getRowCellLocator(0, 2);
+			const rowCellLocThree = await basePage.getRowCellLocator(0, 3);
+			const rowCellLocFour = await basePage.getRowCellLocator(0, 4);
+			const rowCellLocFive = await basePage.getRowCellLocator(0, 5);
 
 			await expect(rowCellLocOne).toContainText(basePage.idRegEx);
 			await expect(rowCellLocTwo).toContainText(userPage.emailRegEx);
@@ -96,12 +96,12 @@ test.describe("UserPage page tests", () => {
 		});
 
 		await test.step("Check that user form elements are displayed", async () => {
-			await expect(basePage.showButtonLoc).toBeEnabled();
-			await expect(basePage.saveButtonLoc).toBeDisabled();
-			await expect(userPage.deleteButtonLoc).toBeEnabled();
-			await expect(userPage.createNewUserEmailInputLoc).toBeVisible();
-			await expect(userPage.createNewUserFNameInputLoc).toBeVisible();
-			await expect(userPage.createNewUserLNameInputLoc).toBeVisible();
+			await expect(basePage.showButton).toBeEnabled();
+			await expect(basePage.saveButton).toBeDisabled();
+			await expect(userPage.deleteButton).toBeEnabled();
+			await expect(userPage.inputEmail).toBeVisible();
+			await expect(userPage.inputFirstName).toBeVisible();
+			await expect(userPage.inputLastName).toBeVisible();
 		});
 	});
 
@@ -119,7 +119,7 @@ test.describe("UserPage page tests", () => {
 			});
 
 			await test.step("Create a new user", async () => {
-				await userPage.fillUserFormByData(newUser);
+				await userPage.fillUserForm(newUser);
 				await basePage.expectNotification("Element created");
 			});
 		});
@@ -132,9 +132,9 @@ test.describe("UserPage page tests", () => {
 			});
 
 			await test.step("Edit certain user by valid data", async () => {
-				await userPage.fillUserFormByData(newUser2);
+				await userPage.fillUserForm(newUser2);
 				await basePage.expectNotification("Element updated");
-				await expect(await basePage.getRowByTextLoc(newUser2.email)).toBeVisible();
+				await expect(await basePage.getRowLocatorByText(newUser2.email)).toBeVisible();
 			});
 		});
 	});
@@ -153,7 +153,7 @@ test.describe("UserPage page tests", () => {
 			});
 
 			await test.step("Create a new user", async () => {
-				await userPage.fillUserFormByData(newUser);
+				await userPage.fillUserForm(newUser);
 				await basePage.expectNotification("Element created");
 			});
 		});
@@ -166,8 +166,8 @@ test.describe("UserPage page tests", () => {
 			});
 
 			await test.step("Edit certain user by invalid data", async () => {
-				await userPage.fillUserFormByData({ ...newUser2, email: "1111google.com" });
-				await expect(userPage.validateEmailFieldLoc).toBeVisible();
+				await userPage.fillUserForm({ ...newUser2, email: "1111google.com" });
+				await expect(userPage.emailValidationError).toBeVisible();
 			});
 		});
 	});
@@ -186,7 +186,7 @@ test.describe("UserPage page tests", () => {
 			});
 
 			await test.step("Create a new user", async () => {
-				await userPage.fillUserFormByData(newUser);
+				await userPage.fillUserForm(newUser);
 				await basePage.expectNotification("Element created");
 			});
 		});
@@ -197,7 +197,7 @@ test.describe("UserPage page tests", () => {
 			});
 
 			await test.step("Delete the new user", async () => {
-				await userPage.deleteButtonLoc.click();
+				await userPage.deleteButton.click();
 				await basePage.expectNotification("Element deleted");
 			});
 
@@ -214,16 +214,16 @@ test.describe("UserPage page tests", () => {
 		});
 
 		await test.step('Click the button "Select All"', async () => {
-			await basePage.selectAllCheckboxLoc.click();
+			await basePage.checkboxSelectAll.click();
 			await basePage.expectNotification("items selected");
 		});
 
 		await test.step("Click the button Delete", async () => {
-			await userPage.deleteButtonLoc.click();
+			await userPage.deleteButton.click();
 		});
 
 		await test.step("Check empty users list", async () => {
-			await expect(userPage.emptyUsersLoc).toBeVisible();
+			await expect(userPage.emptyUsers).toBeVisible();
 		});
 	});
 });

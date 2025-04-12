@@ -12,10 +12,10 @@ test.describe("TasksStatusesPage tests", () => {
 			});
 
 			await test.step("Check that new task status form elements are displayed", async () => {
-				await expect(basePage.rootLoc).toBeVisible();
-				await expect(taskStatusesPage.statusNameInputLoc).toBeVisible();
-				await expect(taskStatusesPage.statusSlugInputLoc).toBeVisible();
-				await expect(basePage.saveButtonLoc).toBeVisible();
+				await expect(basePage.root).toBeVisible();
+				await expect(taskStatusesPage.inputName).toBeVisible();
+				await expect(taskStatusesPage.inputSlug).toBeVisible();
+				await expect(basePage.saveButton).toBeVisible();
 			});
 		});
 
@@ -31,7 +31,7 @@ test.describe("TasksStatusesPage tests", () => {
 			});
 
 			await test.step("Create a new task status", async () => {
-				await taskStatusesPage.fillTaskStatusFormByData(status);
+				await taskStatusesPage.fillTaskStatusForm(status);
 				await basePage.expectNotification("Element created");
 			});
 		});
@@ -42,8 +42,8 @@ test.describe("TasksStatusesPage tests", () => {
 			});
 
 			await test.step("Check that form header elements are displayed", async () => {
-				await expect(basePage.headerRowLoc).toBeVisible();
-				await expect(basePage.selectAllCheckboxLoc).toBeVisible();
+				await expect(basePage.headerRow).toBeVisible();
+				await expect(basePage.checkboxSelectAll).toBeVisible();
 
 				for (let i = 0; i < taskStatusesPage.cellNames.length; i++) {
 					await expect(await basePage.getHeaderCellByTextLocator(taskStatusesPage.cellNames[i])).toBeVisible();
@@ -57,10 +57,10 @@ test.describe("TasksStatusesPage tests", () => {
 			});
 
 			await test.step("Check that task statuses page contains correct data", async () => {
-				const rowCellLocOne = await basePage.getRowCellLoc(0, 1);
-				const rowCellLocTwo = await basePage.getRowCellLoc(0, 2);
-				const rowCellLocThree = await basePage.getRowCellLoc(0, 3);
-				const rowCellLocFour = await basePage.getRowCellLoc(0, 4);
+				const rowCellLocOne = await basePage.getRowCellLocator(0, 1);
+				const rowCellLocTwo = await basePage.getRowCellLocator(0, 2);
+				const rowCellLocThree = await basePage.getRowCellLocator(0, 3);
+				const rowCellLocFour = await basePage.getRowCellLocator(0, 4);
 
 				await expect(rowCellLocOne).toContainText(basePage.idRegEx);
 				await expect(rowCellLocTwo).toContainText(basePage.nameRegEx);
@@ -77,11 +77,11 @@ test.describe("TasksStatusesPage tests", () => {
 			});
 
 			await test.step("Check that task status form elements are displayed", async () => {
-				await expect(basePage.showButtonLoc).toBeEnabled();
-				await expect(basePage.saveButtonLoc).toBeDisabled();
-				await expect(taskStatusesPage.deleteButtonLoc).toBeEnabled();
-				await expect(taskStatusesPage.statusNameInputLoc).toBeVisible();
-				await expect(taskStatusesPage.statusSlugInputLoc).toBeVisible();
+				await expect(basePage.showButton).toBeEnabled();
+				await expect(basePage.saveButton).toBeDisabled();
+				await expect(taskStatusesPage.deleteButton).toBeEnabled();
+				await expect(taskStatusesPage.inputName).toBeVisible();
+				await expect(taskStatusesPage.inputSlug).toBeVisible();
 			});
 		});
 
@@ -98,7 +98,7 @@ test.describe("TasksStatusesPage tests", () => {
 				});
 
 				await test.step("Create a new task status", async () => {
-					await taskStatusesPage.fillTaskStatusFormByData(status);
+					await taskStatusesPage.fillTaskStatusForm(status);
 					await basePage.expectNotification("Element created");
 				});
 			});
@@ -112,7 +112,7 @@ test.describe("TasksStatusesPage tests", () => {
 				});
 
 				await test.step("Edit certain task status by valid data", async () => {
-					await taskStatusesPage.fillTaskStatusFormByData(status2);
+					await taskStatusesPage.fillTaskStatusForm(status2);
 					await basePage.expectNotification("Element updated");
 					await basePage.expectVisibility(status2.name);
 				});
@@ -132,7 +132,7 @@ test.describe("TasksStatusesPage tests", () => {
 				});
 
 				await test.step("Create a new task status", async () => {
-					await taskStatusesPage.fillTaskStatusFormByData(status);
+					await taskStatusesPage.fillTaskStatusForm(status);
 					await basePage.expectNotification("Element created");
 				});
 			});
@@ -145,7 +145,7 @@ test.describe("TasksStatusesPage tests", () => {
 				});
 
 				await test.step("Delete the new status", async () => {
-					await taskStatusesPage.deleteButtonLoc.click();
+					await taskStatusesPage.deleteButton.click();
 					await basePage.expectNotification("Element deleted");
 				});
 
@@ -162,16 +162,16 @@ test.describe("TasksStatusesPage tests", () => {
 			});
 
 			await test.step('Click the button "Select All"', async () => {
-				await basePage.selectAllCheckboxLoc.click();
+				await basePage.checkboxSelectAll.click();
 				await basePage.expectNotification("items selected");
 			});
 
 			await test.step("Click the button Delete", async () => {
-				await taskStatusesPage.deleteButtonLoc.click();
+				await taskStatusesPage.deleteButton.click();
 			});
 
 			await test.step("Check empty statuses list", async () => {
-				await expect(taskStatusesPage.emptyStatusesLoc).toBeVisible();
+				await expect(taskStatusesPage.emptyStatuses).toBeVisible();
 			});
 		});
 	});

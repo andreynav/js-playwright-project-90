@@ -6,10 +6,10 @@ const { loginCredentials } = data;
 test.describe("Login page tests", () => {
 	test("Login form is present", async ({ loginPage }) => {
 		await test.step("Check that login form elements are displayed", async () => {
-			await expect(loginPage.rootLoc).toBeVisible();
-			await expect(loginPage.usernameInputLoc).toBeVisible();
-			await expect(loginPage.passwordInputLoc).toBeVisible();
-			await expect(loginPage.signInButtonLoc).toBeVisible();
+			await expect(loginPage.root).toBeVisible();
+			await expect(loginPage.inputUsername).toBeVisible();
+			await expect(loginPage.inputPassword).toBeVisible();
+			await expect(loginPage.buttonSignIn).toBeVisible();
 		});
 	});
 
@@ -19,7 +19,7 @@ test.describe("Login page tests", () => {
 		});
 
 		await test.step("Check that logged in successfully", async () => {
-			await expect(dashboardPage.dashboardTitleLoc).toBeVisible();
+			await expect(dashboardPage.title).toBeVisible();
 		});
 	});
 
@@ -29,9 +29,9 @@ test.describe("Login page tests", () => {
 		});
 
 		await test.step("Check that log out is successful", async () => {
-			await dashboardPage.profileButtonLoc.click();
-			await dashboardPage.logoutButtonLoc.click();
-			await expect(loginPage.rootLoc).toBeVisible();
+			await dashboardPage.buttonProfile.click();
+			await dashboardPage.buttonLogout.click();
+			await expect(loginPage.root).toBeVisible();
 		});
 	});
 });

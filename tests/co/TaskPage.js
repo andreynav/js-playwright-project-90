@@ -2,9 +2,9 @@ import { BasePage } from "./BasePage";
 
 export class TaskPage extends BasePage {
 	FieldsEnum = {
-		ASSIGNEE: () => this.createNewTaskAssigneInputLoc,
-		STATUS: () => this.createNewTaskStatusInputLoc,
-		LABEL: () => this.createNewTaskLabelInputLoc,
+		ASSIGNEE: () => this.inputAssigne,
+		STATUS: () => this.inputStatus,
+		LABEL: () => this.inputLabel,
 	};
 
 	constructor(page) {
@@ -13,19 +13,19 @@ export class TaskPage extends BasePage {
 		this.pageName = "taskPage";
 		this.collumnsNames = ["Draft", "To Review", "To Be Fixed", "To Publish", "Published"];
 
-		this.createNewTaskAssigneInputLoc = page.getByRole("combobox", { name: "Assignee" });
-		this.createNewTaskStatusInputLoc = page.getByRole("combobox", { name: "Status" });
-		this.createNewTaskLabelInputLoc = page.getByRole("combobox", { name: "Label" });
-		this.createNewTaskTitleInputLoc = page.getByRole("textbox", { name: "Title" });
-		this.createNewTaskContentInputLoc = page.getByRole("textbox", { name: "Content" });
-		this.addFilterButtonLoc = page.getByRole("button", { name: "Add filter" });
+		this.inputAssigne = page.getByRole("combobox", { name: "Assignee" });
+		this.inputStatus = page.getByRole("combobox", { name: "Status" });
+		this.inputLabel = page.getByRole("combobox", { name: "Label" });
+		this.inputTitle = page.getByRole("textbox", { name: "Title" });
+		this.inputContent = page.getByRole("textbox", { name: "Content" });
+		this.buttonAddFilter = page.getByRole("button", { name: "Add filter" });
 
-		this.tableRootLoc = page.locator(".RaList-content > .MuiBox-root");
-		this.nameStrLoc = "div.MuiTypography-h5";
-		this.descriptionStrLoc = "p.MuiTypography-body2";
-		this.indexStrLoc = "p.MuiTypography-body1";
-		this.editButtonStrLoc = '[aria-label="Edit"]';
-		this.showButtonStrLoc = '[aria-label="Show"]';
+		this.root = page.locator(".RaList-content > .MuiBox-root");
+		this.name = "div.MuiTypography-h5";
+		this.description = "p.MuiTypography-body2";
+		this.index = "p.MuiTypography-body1";
+		this.editButton = '[aria-label="Edit"]';
+		this.showButton = '[aria-label="Show"]';
 	}
 
 	async selectItem(field, value) {
@@ -41,21 +41,21 @@ export class TaskPage extends BasePage {
 		await this.page.getByRole("option", { name: option }).click();
 	}
 
-	async fillTaskFormByData(task) {
+	async fillTaskForm(task) {
 		await this.selectItem("ASSIGNEE", task.assignee);
-		await this.createNewTaskTitleInputLoc.fill(task.title);
-		await this.createNewTaskContentInputLoc.fill(task.content);
+		await this.inputTitle.fill(task.title);
+		await this.inputContent.fill(task.content);
 		await this.selectItem("STATUS", task.status);
 		await this.selectItem("LABEL", task.label);
-		await this.saveButtonLoc.click();
+		await this.saveButton.click();
 	}
 
 	getTaskByNumber(number) {
 		return this.page.locator(`[data-rfd-draggable-id="${number}"]`);
 	}
 
-	async getFieldLocForTaskNum(number, locName) {
-		return await this.getTaskByNumber(number).locator(locName);
+	async getFieldLocatorOfTaskNumber(number, locator) {
+		return await this.getTaskByNumber(number).locator(locator);
 	}
 
 	async getTasksInColumn(columnName) {
@@ -68,7 +68,7 @@ export class TaskPage extends BasePage {
 		return tasks;
 	}
 
-	async isTaskWithNameInColumn(columnName, taskName) {
+	async expectTaskInColumn(columnName, taskName) {
 		const taskInColumn = this.page.locator(`xpath=//h6[text()='${columnName}']/following-sibling::div[@data-rfd-droppable-id]//div[@data-rfd-draggable-id]`);
 		const taskCount = await taskInColumn.filter({ hasText: taskName }).count();
 		return taskCount === 1;
@@ -104,5 +104,5 @@ export class TaskPage extends BasePage {
 			status: status,
 			label: label,
 		};
-	};
+	}
 }

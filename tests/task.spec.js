@@ -15,13 +15,13 @@ test.describe("TasksPage page tests", () => {
 			});
 
 			await test.step("Check that task form elements are displayed", async () => {
-				await expect(basePage.rootLoc).toBeVisible();
-				await expect(taskPage.createNewTaskAssigneInputLoc).toBeVisible();
-				await expect(taskPage.createNewTaskStatusInputLoc).toBeVisible();
-				await expect(taskPage.createNewTaskLabelInputLoc).toBeVisible();
-				await expect(taskPage.createNewTaskTitleInputLoc).toBeVisible();
-				await expect(taskPage.createNewTaskContentInputLoc).toBeVisible();
-				await expect(basePage.saveButtonLoc).toBeVisible();
+				await expect(basePage.root).toBeVisible();
+				await expect(taskPage.inputAssigne).toBeVisible();
+				await expect(taskPage.inputStatus).toBeVisible();
+				await expect(taskPage.inputLabel).toBeVisible();
+				await expect(taskPage.inputTitle).toBeVisible();
+				await expect(taskPage.inputContent).toBeVisible();
+				await expect(basePage.saveButton).toBeVisible();
 			});
 		});
 
@@ -37,7 +37,7 @@ test.describe("TasksPage page tests", () => {
 			});
 
 			await test.step("Create a new task", async () => {
-				await taskPage.fillTaskFormByData(task);
+				await taskPage.fillTaskForm(task);
 				await basePage.expectNotification("Element created");
 			});
 		});
@@ -48,9 +48,9 @@ test.describe("TasksPage page tests", () => {
 			});
 
 			await test.step("Check that all filters elements are displayed", async () => {
-				await expect(taskPage.createNewTaskAssigneInputLoc).toBeVisible();
-				await expect(taskPage.createNewTaskStatusInputLoc).toBeVisible();
-				await expect(taskPage.createNewTaskLabelInputLoc).toBeVisible();
+				await expect(taskPage.inputAssigne).toBeVisible();
+				await expect(taskPage.inputStatus).toBeVisible();
+				await expect(taskPage.inputLabel).toBeVisible();
 			});
 		});
 
@@ -60,7 +60,7 @@ test.describe("TasksPage page tests", () => {
 			});
 
 			await test.step("Check that form selector elements are displayed", async () => {
-				await expect(taskPage.tableRootLoc).toBeVisible();
+				await expect(taskPage.root).toBeVisible();
 
 				for (const column of taskPage.collumnsNames) {
 					await expect(page.getByRole("heading", { name: column })).toBeVisible();
@@ -73,12 +73,12 @@ test.describe("TasksPage page tests", () => {
 				await basePage.openPage(taskPage.pageName);
 			});
 
-			await test.step("Check that task's elements are displayed", async () => {
-				const taskName = await taskPage.getFieldLocForTaskNum(1, taskPage.nameStrLoc);
-				const taskDescription = await taskPage.getFieldLocForTaskNum(1, taskPage.descriptionStrLoc);
-				const taskIndexLocator = await taskPage.getFieldLocForTaskNum(1, taskPage.indexStrLoc);
-				const taskEditButton = await taskPage.getFieldLocForTaskNum(1, taskPage.editButtonStrLoc);
-				const taskShowButton = await taskPage.getFieldLocForTaskNum(1, taskPage.showButtonStrLoc);
+			await test.step("Check that task elements are displayed", async () => {
+				const taskName = await taskPage.getFieldLocatorOfTaskNumber(1, taskPage.name);
+				const taskDescription = await taskPage.getFieldLocatorOfTaskNumber(1, taskPage.description);
+				const taskIndexLocator = await taskPage.getFieldLocatorOfTaskNumber(1, taskPage.index);
+				const taskEditButton = await taskPage.getFieldLocatorOfTaskNumber(1, taskPage.editButton);
+				const taskShowButton = await taskPage.getFieldLocatorOfTaskNumber(1, taskPage.showButton);
 
 				await expect(taskName).toBeVisible();
 				await expect(taskDescription).toBeVisible();
@@ -94,9 +94,9 @@ test.describe("TasksPage page tests", () => {
 			});
 
 			await test.step("Check that a task contains correct data", async () => {
-				const taskName = await taskPage.getFieldLocForTaskNum(1, taskPage.nameStrLoc);
-				const taskDescription = await taskPage.getFieldLocForTaskNum(1, taskPage.descriptionStrLoc);
-				const taskIndexLocator = await taskPage.getFieldLocForTaskNum(1, taskPage.indexStrLoc);
+				const taskName = await taskPage.getFieldLocatorOfTaskNumber(1, taskPage.name);
+				const taskDescription = await taskPage.getFieldLocatorOfTaskNumber(1, taskPage.description);
+				const taskIndexLocator = await taskPage.getFieldLocatorOfTaskNumber(1, taskPage.index);
 
 				await expect(taskName).toHaveText(taskOne.title);
 				await expect(taskDescription).toHaveText(taskOne.description);
@@ -111,7 +111,7 @@ test.describe("TasksPage page tests", () => {
 
 			await test.step("Select certain assignee", async () => {
 				await taskPage.selectFilter(Filter.ASSIGNEE, "john@google.com");
-				await taskPage.addFilterButtonLoc.waitFor();
+				await taskPage.buttonAddFilter.waitFor();
 			});
 
 			await test.step("Check that certain tasks are displayed in appropriate columns", async () => {
@@ -136,7 +136,7 @@ test.describe("TasksPage page tests", () => {
 
 			await test.step("Select certain status", async () => {
 				await taskPage.selectFilter(Filter.STATUS, Status.DRAFT);
-				await taskPage.addFilterButtonLoc.waitFor();
+				await taskPage.buttonAddFilter.waitFor();
 			});
 
 			await test.step("Check that certain tasks are displayed in appropriate columns", async () => {
@@ -161,7 +161,7 @@ test.describe("TasksPage page tests", () => {
 
 			await test.step("Select certain label", async () => {
 				await taskPage.selectFilter(Filter.LABEL, Label.CRITICAL);
-				await taskPage.addFilterButtonLoc.waitFor();
+				await taskPage.buttonAddFilter.waitFor();
 			});
 
 			await test.step("Check that certain tasks are displayed in appropriate columns", async () => {
@@ -186,15 +186,15 @@ test.describe("TasksPage page tests", () => {
 
 			await test.step("Select certain assignee", async () => {
 				await taskPage.selectFilter(Filter.ASSIGNEE, "john@google.com");
-				await taskPage.addFilterButtonLoc.waitFor();
+				await taskPage.buttonAddFilter.waitFor();
 			});
 
 			await test.step("Check that tasks with certain names are displayed in appropriate columns", async () => {
-				expect(await taskPage.isTaskWithNameInColumn(Status.DRAFT, "Task 11")).toBeTruthy();
-				expect(await taskPage.isTaskWithNameInColumn(Status.DRAFT, "Task 5")).toBeTruthy();
-				expect(await taskPage.isTaskWithNameInColumn(Status.TO_REVIEW, "Task 2")).toBeTruthy();
-				expect(await taskPage.isTaskWithNameInColumn(Status.TO_BE_FIXED, "Task 1")).toBeTruthy();
-				expect(await taskPage.isTaskWithNameInColumn(Status.PUBLISHED, "Task 15")).toBeTruthy();
+				expect(await taskPage.expectTaskInColumn(Status.DRAFT, "Task 11")).toBeTruthy();
+				expect(await taskPage.expectTaskInColumn(Status.DRAFT, "Task 5")).toBeTruthy();
+				expect(await taskPage.expectTaskInColumn(Status.TO_REVIEW, "Task 2")).toBeTruthy();
+				expect(await taskPage.expectTaskInColumn(Status.TO_BE_FIXED, "Task 1")).toBeTruthy();
+				expect(await taskPage.expectTaskInColumn(Status.PUBLISHED, "Task 15")).toBeTruthy();
 			});
 		});
 
@@ -211,7 +211,7 @@ test.describe("TasksPage page tests", () => {
 			});
 
 			await test.step("Check that certain tasks are displayed in appropriate columns", async () => {
-				expect(await taskPage.isTaskWithNameInColumn(Status.TO_REVIEW, "Task 11")).toBeTruthy();
+				expect(await taskPage.expectTaskInColumn(Status.TO_REVIEW, "Task 11")).toBeTruthy();
 			});
 		});
 	});

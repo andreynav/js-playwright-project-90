@@ -13,13 +13,13 @@ export class BasePage {
 		this.nameRegEx = /\b[a-zA-Z][a-zA-Z]*\b/;
 		this.dateRegEx = /^(\d{1,2}\/\d{1,2}\/\d{4}, \d{1,2}:\d{2}:\d{2} (AM|PM)|\d{1,2}\.\d{1,2}\.\d{4}, \d{2}:\d{2}:\d{2})$/;
 
-		this.rootLoc = page.locator("div.MuiPaper-root.MuiCard-root.RaCreate-card");
-		this.showButtonLoc = page.getByRole("link", { name: "Show" });
-		this.saveButtonLoc = page.getByRole("button", { name: "Save" });
-		this.deleteButtonLoc = page.getByRole("button", { name: "Delete" });
-		this.headerRowLoc = page.locator("tr.RaDatagrid-headerRow");
-		this.rowLoc = page.locator("tr.RaDatagrid-clickableRow");
-		this.selectAllCheckboxLoc = page.getByRole("checkbox", { name: "Select all" });
+		this.root = page.locator("div.MuiPaper-root.MuiCard-root.RaCreate-card");
+		this.showButton = page.getByRole("link", { name: "Show" });
+		this.saveButton = page.getByRole("button", { name: "Save" });
+		this.deleteButton = page.getByRole("button", { name: "Delete" });
+		this.headerRow = page.locator("tr.RaDatagrid-headerRow");
+		this.row = page.locator("tr.RaDatagrid-clickableRow");
+		this.checkboxSelectAll = page.getByRole("checkbox", { name: "Select all" });
 	}
 
 	async openPage(pageName, id) {
@@ -81,12 +81,12 @@ export class BasePage {
 		return this.page.locator("tr.RaDatagrid-clickableRow");
 	}
 
-	async getRowCellLoc(rowNum, cellNum) {
-		const rowLoc = this.getRowLocator();
-		return rowLoc.nth(rowNum).locator("td").nth(cellNum);
+	async getRowCellLocator(rowNum, cellNum) {
+		const rowLocator = this.getRowLocator();
+		return rowLocator.nth(rowNum).locator("td").nth(cellNum);
 	}
 
-	async getRowByTextLoc(text) {
+	async getRowLocatorByText(text) {
 		return this.page.getByRole("row").filter({ hasText: text });
 	}
 

@@ -11,9 +11,9 @@ test.describe("LabelPage tests", () => {
 		});
 
 		await test.step("Check that new Label form elements are displayed", async () => {
-			await expect(basePage.rootLoc).toBeVisible();
-			await expect(labelPage.labelNameInputLoc).toBeVisible();
-			await expect(basePage.saveButtonLoc).toBeVisible();
+			await expect(basePage.root).toBeVisible();
+			await expect(labelPage.inputName).toBeVisible();
+			await expect(basePage.saveButton).toBeVisible();
 		});
 	});
 
@@ -29,7 +29,7 @@ test.describe("LabelPage tests", () => {
 		});
 
 		await test.step("Create a new label", async () => {
-			await labelPage.fillLabelFormByData(label);
+			await labelPage.fillLabelForm(label);
 			await basePage.expectNotification("Element created");
 		});
 	});
@@ -40,8 +40,8 @@ test.describe("LabelPage tests", () => {
 		});
 
 		await test.step("Check that form header elements are displayed", async () => {
-			await expect(basePage.headerRowLoc).toBeVisible();
-			await expect(basePage.selectAllCheckboxLoc).toBeVisible();
+			await expect(basePage.headerRow).toBeVisible();
+			await expect(basePage.checkboxSelectAll).toBeVisible();
 
 			for (let i = 0; i < labelPage.cellNames.length; i++) {
 				await expect(await basePage.getHeaderCellByTextLocator(labelPage.cellNames[i])).toBeVisible();
@@ -55,9 +55,9 @@ test.describe("LabelPage tests", () => {
 		});
 
 		await test.step("Check that label page contains correct data", async () => {
-			const rowCellLocOne = await basePage.getRowCellLoc(0, 1);
-			const rowCellLocTwo = await basePage.getRowCellLoc(0, 2);
-			const rowCellLocThree = await basePage.getRowCellLoc(0, 3);
+			const rowCellLocOne = await basePage.getRowCellLocator(0, 1);
+			const rowCellLocTwo = await basePage.getRowCellLocator(0, 2);
+			const rowCellLocThree = await basePage.getRowCellLocator(0, 3);
 
 			await expect(rowCellLocOne).toContainText(basePage.idRegEx);
 			await expect(rowCellLocTwo).toContainText(basePage.nameRegEx);
@@ -73,10 +73,10 @@ test.describe("LabelPage tests", () => {
 		});
 
 		await test.step("Check that label form elements are displayed", async () => {
-			await expect(basePage.showButtonLoc).toBeEnabled();
-			await expect(basePage.saveButtonLoc).toBeDisabled();
-			await expect(labelPage.deleteButtonLoc).toBeEnabled();
-			await expect(labelPage.labelNameInputLoc).toBeVisible();
+			await expect(basePage.showButton).toBeEnabled();
+			await expect(basePage.saveButton).toBeDisabled();
+			await expect(labelPage.deleteButton).toBeEnabled();
+			await expect(labelPage.inputName).toBeVisible();
 		});
 	});
 
@@ -93,7 +93,7 @@ test.describe("LabelPage tests", () => {
 			});
 
 			await test.step("Create a new label", async () => {
-				await labelPage.fillLabelFormByData(label);
+				await labelPage.fillLabelForm(label);
 				await basePage.expectNotification("Element created");
 			});
 		});
@@ -107,9 +107,9 @@ test.describe("LabelPage tests", () => {
 			});
 
 			await test.step("Edit certain label by valid data", async () => {
-				await labelPage.fillLabelFormByData(label2);
+				await labelPage.fillLabelForm(label2);
 				await basePage.expectNotification("Element updated");
-				await expect(await basePage.getRowByTextLoc(label2)).toBeVisible();
+				await expect(await basePage.getRowLocatorByText(label2)).toBeVisible();
 			});
 		});
 	});
@@ -127,7 +127,7 @@ test.describe("LabelPage tests", () => {
 			});
 
 			await test.step("Create a new label", async () => {
-				await labelPage.fillLabelFormByData(label);
+				await labelPage.fillLabelForm(label);
 				await basePage.expectNotification("Element created");
 			});
 		});
@@ -140,7 +140,7 @@ test.describe("LabelPage tests", () => {
 			});
 
 			await test.step("Delete the new label", async () => {
-				await labelPage.deleteButtonLoc.click();
+				await labelPage.deleteButton.click();
 				await basePage.expectNotification("Element deleted");
 			});
 
@@ -157,16 +157,16 @@ test.describe("LabelPage tests", () => {
 		});
 
 		await test.step('Click the button "Select All"', async () => {
-			await basePage.selectAllCheckboxLoc.click();
+			await basePage.checkboxSelectAll.click();
 			await basePage.expectNotification("tems selected");
 		});
 
 		await test.step("Click the button Delete", async () => {
-			await labelPage.deleteButtonLoc.click();
+			await labelPage.deleteButton.click();
 		});
 
 		await test.step("Check empty labels list", async () => {
-			await expect(labelPage.emptyLabelsLoc).toBeVisible();
+			await expect(labelPage.emptyLabels).toBeVisible();
 		});
 	});
 });
