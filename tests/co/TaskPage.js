@@ -94,4 +94,15 @@ export class TaskPage extends BasePage {
 		await this.page.mouse.up();
 		await this.page.waitForTimeout(upTimeout);
 	}
+
+	async getNewTaskData(status, label) {
+		const timestamp = new Date().getTime();
+		return {
+			assignee: "john@google.com",
+			title: `${timestamp}title`,
+			content: `${timestamp}content`,
+			status: status,
+			label: label,
+		};
+	};
 }

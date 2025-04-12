@@ -1,4 +1,3 @@
-import { loginCredentials } from "../helpers";
 import { BasePage } from "./BasePage";
 import { DashboardPage } from "./DashboardPage";
 import { LabelPage } from "./LabelPage";
@@ -6,7 +5,10 @@ import { LoginPage } from "./LoginPage";
 import { TaskPage } from "./TaskPage";
 import { TaskStatusesPage } from "./TaskStatusesPage";
 import { UserPage } from "./UserPage";
+import data from "../data/testData";
 import { test as base, expect } from "@playwright/test";
+
+const { loginCredentials } = data;
 
 async function loginAndVerify(loginPage, dashboardPage) {
 	await test.step("Log in with credentials", async () => {

@@ -1,5 +1,4 @@
 import { test, expect } from "./co/co.js";
-import { getNewUserData, checkIsEntityInTable, expectSuccessNotification, invalidEmail } from "./helpers/index.js";
 
 test.describe("UserPage page tests", () => {
 	test("Create a new user form contains all required fields", async ({ basePage, userPage }) => {
@@ -19,8 +18,8 @@ test.describe("UserPage page tests", () => {
 		});
 	});
 
-	test("Create a new user", async ({ basePage, userPage, page }) => {
-		const newUser = await getNewUserData();
+	test("Create a new user", async ({ basePage, userPage }) => {
+		const newUser = await userPage.getNewUserData();
 
 		await test.step("Open users page", async () => {
 			await basePage.openPage(userPage.pageName);
@@ -32,12 +31,12 @@ test.describe("UserPage page tests", () => {
 
 		await test.step("Create a new user", async () => {
 			await userPage.fillUserFormByData(newUser);
-			await expectSuccessNotification(page, "Element created");
+			await basePage.expectNotification("Element created");
 		});
 
 		await test.step("Check that user is displayed in the table", async () => {
 			await basePage.openPage(userPage.pageName);
-			await checkIsEntityInTable(page, newUser.email, true);
+			await basePage.expectVisibility(newUser.email);
 		});
 	});
 
@@ -106,8 +105,8 @@ test.describe("UserPage page tests", () => {
 		});
 	});
 
-	test("Edit a user with correct data", async ({ basePage, userPage, page }) => {
-		const newUser = await getNewUserData();
+	test("Edit a user with correct data", async ({ basePage, userPage }) => {
+		const newUser = await userPage.getNewUserData();
 		const userId = 9;
 
 		await test.step("Create a new user", async () => {
@@ -121,11 +120,11 @@ test.describe("UserPage page tests", () => {
 
 			await test.step("Create a new user", async () => {
 				await userPage.fillUserFormByData(newUser);
-				await expectSuccessNotification(page, "Element created");
+				await basePage.expectNotification("Element created");
 			});
 		});
 
-		const newUser2 = await getNewUserData();
+		const newUser2 = await userPage.getNewUserData();
 
 		await test.step("Edit the new user with valid data", async () => {
 			await test.step("Open certain user page", async () => {
@@ -134,14 +133,14 @@ test.describe("UserPage page tests", () => {
 
 			await test.step("Edit certain user by valid data", async () => {
 				await userPage.fillUserFormByData(newUser2);
-				await expectSuccessNotification(page, "Element updated");
+				await basePage.expectNotification("Element updated");
 				await expect(await basePage.getRowByTextLoc(newUser2.email)).toBeVisible();
 			});
 		});
 	});
 
-	test("Edit a user with incorrect email", async ({ basePage, userPage, page }) => {
-		const newUser = await getNewUserData();
+	test("Edit a user with incorrect email", async ({ basePage, userPage }) => {
+		const newUser = await userPage.getNewUserData();
 		const userId = 9;
 
 		await test.step("Create a new user", async () => {
@@ -155,11 +154,11 @@ test.describe("UserPage page tests", () => {
 
 			await test.step("Create a new user", async () => {
 				await userPage.fillUserFormByData(newUser);
-				await expectSuccessNotification(page, "Element created");
+				await basePage.expectNotification("Element created");
 			});
 		});
 
-		const newUser2 = await getNewUserData();
+		const newUser2 = await userPage.getNewUserData();
 
 		await test.step("Edit the new user with invalid data", async () => {
 			await test.step("Open certain user page", async () => {
@@ -167,14 +166,14 @@ test.describe("UserPage page tests", () => {
 			});
 
 			await test.step("Edit certain user by invalid data", async () => {
-				await userPage.fillUserFormByData({ ...newUser2, email: invalidEmail });
+				await userPage.fillUserFormByData({ ...newUser2, email: "1111google.com" });
 				await expect(userPage.validateEmailFieldLoc).toBeVisible();
 			});
 		});
 	});
 
-	test("Delete a user", async ({ basePage, userPage, page }) => {
-		const newUser = await getNewUserData();
+	test("Delete a user", async ({ basePage, userPage }) => {
+		const newUser = await userPage.getNewUserData();
 		const userId = 9;
 
 		await test.step("Create a new user", async () => {
@@ -188,7 +187,7 @@ test.describe("UserPage page tests", () => {
 
 			await test.step("Create a new user", async () => {
 				await userPage.fillUserFormByData(newUser);
-				await expectSuccessNotification(page, "Element created");
+				await basePage.expectNotification("Element created");
 			});
 		});
 
@@ -199,24 +198,24 @@ test.describe("UserPage page tests", () => {
 
 			await test.step("Delete the new user", async () => {
 				await userPage.deleteButtonLoc.click();
-				await expectSuccessNotification(page, "Element deleted");
+				await basePage.expectNotification("Element deleted");
 			});
 
 			await test.step("Check that user is not displayed in the table", async () => {
 				await basePage.openPage(userPage.pageName);
-				await checkIsEntityInTable(page, newUser.email);
+				await basePage.expectVisibility(newUser.email, false);
 			});
 		});
 	});
 
-	test("Bulk delete users", async ({ basePage, userPage, page }) => {
+	test("Bulk delete users", async ({ basePage, userPage }) => {
 		await test.step("Open users page", async () => {
 			await basePage.openPage(userPage.pageName);
 		});
 
 		await test.step('Click the button "Select All"', async () => {
 			await basePage.selectAllCheckboxLoc.click();
-			await expectSuccessNotification(page, "items selected");
+			await basePage.expectNotification("items selected");
 		});
 
 		await test.step("Click the button Delete", async () => {

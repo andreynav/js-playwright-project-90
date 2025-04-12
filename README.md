@@ -15,8 +15,8 @@ The project based on [Hexlet Task Manager](https://www.npmjs.com/package/@hexlet
 
 The project has multilayer structure:
 
-- `co` - used to keep component objects
-- `helpers` - used to keep test data and utils for helping
+- `co` - used to keep component objects and fixtures
+- `data` - used to keep test data
 
 ## Dependencies
 

@@ -1,5 +1,4 @@
 import { test, expect } from "./co/co.js";
-import { expectSuccessNotification, checkIsEntityInTable } from "./helpers/index.js";
 
 test.describe("TasksStatusesPage tests", () => {
 	test.describe("Task statuses tests", () => {
@@ -20,7 +19,7 @@ test.describe("TasksStatusesPage tests", () => {
 			});
 		});
 
-		test("Create new task status", async ({ basePage, taskStatusesPage, page }) => {
+		test("Create new task status", async ({ basePage, taskStatusesPage }) => {
 			const status = { name: "To Design", slug: "to_design" };
 
 			await test.step("Open task statuses page", async () => {
@@ -33,7 +32,7 @@ test.describe("TasksStatusesPage tests", () => {
 
 			await test.step("Create a new task status", async () => {
 				await taskStatusesPage.fillTaskStatusFormByData(status);
-				await expectSuccessNotification(page, "Element created");
+				await basePage.expectNotification("Element created");
 			});
 		});
 
@@ -86,7 +85,7 @@ test.describe("TasksStatusesPage tests", () => {
 			});
 		});
 
-		test("Edit a status with correct data", async ({ basePage, taskStatusesPage, page }) => {
+		test("Edit a status with correct data", async ({ basePage, taskStatusesPage }) => {
 			await test.step("Create new task status", async () => {
 				const status = { name: "To Design", slug: "to_design" };
 
@@ -100,7 +99,7 @@ test.describe("TasksStatusesPage tests", () => {
 
 				await test.step("Create a new task status", async () => {
 					await taskStatusesPage.fillTaskStatusFormByData(status);
-					await expectSuccessNotification(page, "Element created");
+					await basePage.expectNotification("Element created");
 				});
 			});
 
@@ -114,13 +113,13 @@ test.describe("TasksStatusesPage tests", () => {
 
 				await test.step("Edit certain task status by valid data", async () => {
 					await taskStatusesPage.fillTaskStatusFormByData(status2);
-					await expectSuccessNotification(page, "Element updated");
-					await checkIsEntityInTable(page, status2.name);
+					await basePage.expectNotification("Element updated");
+					await basePage.expectVisibility(status2.name);
 				});
 			});
 		});
 
-		test("Delete a task status", async ({ basePage, taskStatusesPage, page }) => {
+		test("Delete a task status", async ({ basePage, taskStatusesPage }) => {
 			const status = { name: "To Design", slug: "to_design" };
 
 			await test.step("Create new task status", async () => {
@@ -134,7 +133,7 @@ test.describe("TasksStatusesPage tests", () => {
 
 				await test.step("Create a new task status", async () => {
 					await taskStatusesPage.fillTaskStatusFormByData(status);
-					await expectSuccessNotification(page, "Element created");
+					await basePage.expectNotification("Element created");
 				});
 			});
 
@@ -147,24 +146,24 @@ test.describe("TasksStatusesPage tests", () => {
 
 				await test.step("Delete the new status", async () => {
 					await taskStatusesPage.deleteButtonLoc.click();
-					await expectSuccessNotification(page, "Element deleted");
+					await basePage.expectNotification("Element deleted");
 				});
 
 				await test.step("Check that status is not displayed in the table", async () => {
 					await basePage.openPage(taskStatusesPage.pageName);
-					await checkIsEntityInTable(page, status.name);
+					await basePage.expectVisibility(status.name, false);
 				});
 			});
 		});
 
-		test("Bulk delete statuses", async ({ basePage, taskStatusesPage, page }) => {
+		test("Bulk delete statuses", async ({ basePage, taskStatusesPage }) => {
 			await test.step("Open task statuses page", async () => {
 				await basePage.openPage(taskStatusesPage.pageName);
 			});
 
 			await test.step('Click the button "Select All"', async () => {
 				await basePage.selectAllCheckboxLoc.click();
-				await expectSuccessNotification(page, "items selected");
+				await basePage.expectNotification("items selected");
 			});
 
 			await test.step("Click the button Delete", async () => {

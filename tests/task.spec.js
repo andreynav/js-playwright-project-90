@@ -1,5 +1,7 @@
-import { getNewTaskData, expectSuccessNotification, Status, Label, Filter, taskOne } from "./helpers/index.js";
 import { test, expect } from "./co/co.js";
+import data from "./data/testData.js";
+
+const { Status, Label, Filter, taskOne } = data;
 
 test.describe("TasksPage page tests", () => {
 	test.describe("Statuses tests", () => {
@@ -23,8 +25,8 @@ test.describe("TasksPage page tests", () => {
 			});
 		});
 
-		test("Create task with PUBLISHED statuses", async ({ basePage, taskPage, page }) => {
-			const task = await getNewTaskData(Status.PUBLISHED, Label.BUG);
+		test("Create task with PUBLISHED statuses", async ({ basePage, taskPage }) => {
+			const task = await taskPage.getNewTaskData(Status.PUBLISHED, Label.BUG);
 
 			await test.step("Open task page", async () => {
 				await basePage.openPage(taskPage.pageName);
@@ -36,7 +38,7 @@ test.describe("TasksPage page tests", () => {
 
 			await test.step("Create a new task", async () => {
 				await taskPage.fillTaskFormByData(task);
-				await expectSuccessNotification(page, "Element created");
+				await basePage.expectNotification("Element created");
 			});
 		});
 

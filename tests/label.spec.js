@@ -1,5 +1,4 @@
 import { test, expect } from "./co/co.js";
-import { expectSuccessNotification, checkIsEntityInTable } from "./helpers/index.js";
 
 test.describe("LabelPage tests", () => {
 	test("Create a label form contains all required fields", async ({ basePage, labelPage }) => {
@@ -18,7 +17,7 @@ test.describe("LabelPage tests", () => {
 		});
 	});
 
-	test("Create new label", async ({ basePage, labelPage, page }) => {
+	test("Create new label", async ({ basePage, labelPage }) => {
 		const label = "design";
 
 		await test.step("Open labels page", async () => {
@@ -31,7 +30,7 @@ test.describe("LabelPage tests", () => {
 
 		await test.step("Create a new label", async () => {
 			await labelPage.fillLabelFormByData(label);
-			await expectSuccessNotification(page, "Element created");
+			await basePage.expectNotification("Element created");
 		});
 	});
 
@@ -81,7 +80,7 @@ test.describe("LabelPage tests", () => {
 		});
 	});
 
-	test("Edit a label with correct data", async ({ basePage, labelPage, page }) => {
+	test("Edit a label with correct data", async ({ basePage, labelPage }) => {
 		await test.step("Create new label ", async () => {
 			const label = "design";
 
@@ -95,7 +94,7 @@ test.describe("LabelPage tests", () => {
 
 			await test.step("Create a new label", async () => {
 				await labelPage.fillLabelFormByData(label);
-				await expectSuccessNotification(page, "Element created");
+				await basePage.expectNotification("Element created");
 			});
 		});
 
@@ -109,13 +108,13 @@ test.describe("LabelPage tests", () => {
 
 			await test.step("Edit certain label by valid data", async () => {
 				await labelPage.fillLabelFormByData(label2);
-				await expectSuccessNotification(page, "Element updated");
+				await basePage.expectNotification("Element updated");
 				await expect(await basePage.getRowByTextLoc(label2)).toBeVisible();
 			});
 		});
 	});
 
-	test("Delete a label", async ({ basePage, labelPage, page }) => {
+	test("Delete a label", async ({ basePage, labelPage }) => {
 		const label = "design";
 
 		await test.step("Create new label ", async () => {
@@ -129,7 +128,7 @@ test.describe("LabelPage tests", () => {
 
 			await test.step("Create a new label", async () => {
 				await labelPage.fillLabelFormByData(label);
-				await expectSuccessNotification(page, "Element created");
+				await basePage.expectNotification("Element created");
 			});
 		});
 
@@ -142,24 +141,24 @@ test.describe("LabelPage tests", () => {
 
 			await test.step("Delete the new label", async () => {
 				await labelPage.deleteButtonLoc.click();
-				await expectSuccessNotification(page, "Element deleted");
+				await basePage.expectNotification("Element deleted");
 			});
 
 			await test.step("Check that label is not displayed in the table", async () => {
 				await basePage.openPage(labelPage.pageName);
-				await checkIsEntityInTable(page, label);
+				await basePage.expectVisibility(label, false);
 			});
 		});
 	});
 
-	test("Bulk delete labels", async ({ basePage, labelPage, page }) => {
+	test("Bulk delete labels", async ({ basePage, labelPage }) => {
 		await test.step("Open labels page", async () => {
 			await basePage.openPage(labelPage.pageName);
 		});
 
 		await test.step('Click the button "Select All"', async () => {
 			await basePage.selectAllCheckboxLoc.click();
-			await expectSuccessNotification(page, "tems selected");
+			await basePage.expectNotification("tems selected");
 		});
 
 		await test.step("Click the button Delete", async () => {

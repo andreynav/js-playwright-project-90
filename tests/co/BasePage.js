@@ -1,3 +1,5 @@
+import { expect } from "@playwright/test";
+
 export class BasePage {
 	constructor(page) {
 		this.page = page;
@@ -87,4 +89,13 @@ export class BasePage {
 	async getRowByTextLoc(text) {
 		return this.page.getByRole("row").filter({ hasText: text });
 	}
+
+	expectVisibility = async (entityData, isVisible = true) => {
+		const row = await this.page.getByRole("row").filter({ hasText: entityData });
+		return isVisible ? expect(row).toBeVisible() : expect(row).not.toBeVisible();
+	};
+
+	expectNotification = async (text) => {
+		return expect(await this.page.getByText(text)).toBeVisible();
+	};
 }
